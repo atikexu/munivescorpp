@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-01-19T16:19:07 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" columnCount="2" pageWidth="595" pageHeight="842" columnWidth="297" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="0db59874-366d-4444-beb1-2fd59373caaa">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="418"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="571"/>
+	<property name="net.sf.jasperreports.print.create.bookmarks" value="false"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<parameter name="fecha" class="java.sql.Date"/>
+	<queryString>
+		<![CDATA[select d.nom_cli, d.cod_bar, d.des_pro_val, d.fec_pro, d.val_des_emi, d.val_nro_ide, 
+dc.nro_coo, d.des_nom_ape, dc.tlf_coo, d.des_mot, dc.dir_coo, dc.fec_coo, dc.hor_coo,
+dc.obs_coo, dc.ref_coo, 
+(select h.nro_hoja from hoja_ruta h, hoja_ruta_detalle hd 
+where hd.cod_bar=d.cod_bar and hd.id_ruta=h.id_ruta and hd.carga=0) as numhoja
+from distribucion_coord dc, distribucion d
+where dc.fec_coo =  $P{fecha}  
+and dc.cod_bar=d.cod_bar
+order by d.cod_cli]]>
+	</queryString>
+	<field name="nom_cli" class="java.lang.String"/>
+	<field name="cod_bar" class="java.lang.String"/>
+	<field name="des_pro_val" class="java.lang.String"/>
+	<field name="fec_pro" class="java.sql.Date"/>
+	<field name="val_des_emi" class="java.lang.String"/>
+	<field name="val_nro_ide" class="java.lang.String"/>
+	<field name="nro_coo" class="java.lang.String"/>
+	<field name="des_nom_ape" class="java.lang.String"/>
+	<field name="tlf_coo" class="java.lang.String"/>
+	<field name="des_mot" class="java.lang.String"/>
+	<field name="dir_coo" class="java.lang.String"/>
+	<field name="fec_coo" class="java.sql.Date"/>
+	<field name="hor_coo" class="java.lang.String"/>
+	<field name="obs_coo" class="java.lang.String"/>
+	<field name="ref_coo" class="java.lang.String"/>
+	<field name="numhoja" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="276">
+			<staticText>
+				<reportElement x="9" y="181" width="70" height="15" uuid="8d5df739-3ba7-4d00-9cd2-a02d5ce7b7fa">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Observaciones]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="9" y="120" width="101" height="15" uuid="f07abdb9-e6fa-4113-848b-31a1c191c124">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Dirección Coordinada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="9" y="157" width="57" height="15" uuid="a1acfe5f-456d-4c69-b56e-aafe0ab50e1d">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Distrito]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="9" y="62" width="54" height="15" uuid="c14c1670-8618-4010-a27a-37312d531f48">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Destinatario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="86" width="43" height="30" uuid="59fbc7f9-b033-4337-9ec4-975c8cac2279">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Teléfonos
+Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="163" y="20" width="24" height="15" uuid="f3d2e767-53dd-4a7c-95b8-ab250d728bad">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Pieza]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="108" y="157" width="82" height="15" uuid="01d4f7a4-305d-42c4-8d15-162940de79d7">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Fecha-Hora Coordinada]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="14" y="34" width="151" height="19" uuid="36976569-9e13-48ab-81c8-9c61dc6e5cbb"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="3of9" drawText="false" checksumRequired="false">
+					<jr:codeExpression><![CDATA[$F{cod_bar}]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<textField>
+				<reportElement x="38" y="52" width="100" height="12" uuid="cddc9ea2-2e27-422e-9a79-1e6aa6c84cd1"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cod_bar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="245" width="70" height="15" uuid="2a1677ab-c122-47cb-a4e3-1d2bc4716947">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[VALUES]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="10" y="8" width="154" height="15" uuid="fc4dd37f-ebfa-4f89-ad43-dd6144a249f6">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_cli}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="165" y="8" width="124" height="15" uuid="56cba1b1-79c7-4fb5-8bff-e811a54e25ae">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_pro_val}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="190" y="20" width="100" height="15" uuid="097cb662-605b-483c-bd10-b2f0701dad77">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{val_des_emi}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="176" y="37" width="100" height="15" uuid="119c0d02-433f-4c05-9c24-0d0021766393">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{val_nro_ide}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="176" y="51" width="100" height="15" uuid="34acba2b-99d6-4b9f-8493-0bce4200d5b6">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_coo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="9" y="74" width="154" height="15" uuid="d17bc0e4-69fd-4487-81cc-d9eec5abeda2">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_nom_ape}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="133" y="86" width="100" height="15" uuid="eb379a86-d822-434e-abdb-f831bd3f5548">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tlf_coo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="90" y="108" width="170" height="15" uuid="2a42c67a-7065-4707-bbe1-a51a6cc15b11">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numhoja}!=null?$F{numhoja}:$F{des_mot}
+
+]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="172" width="70" height="15" uuid="46d7d344-71b4-404e-b656-baf86b6c20aa"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fec_coo}.toString()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="178" y="172" width="102" height="15" uuid="06bd3442-ea4e-4607-9e9f-307c72f0e9d9">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hor_coo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="10" y="132" width="271" height="30" uuid="188aa644-1f46-4c9e-ae79-ffa0b70d5ff2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dir_coo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="9" y="194" width="272" height="30" uuid="79acd1a0-d726-4a9f-8833-5d46c72dc81c"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{obs_coo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="9" y="221" width="272" height="30" uuid="04399eea-4b0f-4ef7-b996-1958bb008e2f"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ref_coo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="20" width="54" height="15" uuid="810edcbc-d537-4f31-993e-7f608642a87e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Cargo]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="50" y="20" width="100" height="15" uuid="a98164c6-4e34-4bf4-b006-56e8e3854fc1">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fec_pro}.toString()]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy" isBlankWhenNull="true">
+				<reportElement x="9" y="254" width="130" height="15" uuid="642352bb-324a-4fa3-b86b-9303b3e63af5"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="258" y="252" width="19" height="18" uuid="529c5d31-e15d-49e1-8fb7-2e5cb01f21fb"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="145" y="254" width="100" height="15" uuid="98190f54-8ae5-45cd-b81d-d9e3c5e02944">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numhoja}!=null?$F{numhoja}:"0"
+
+]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

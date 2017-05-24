@@ -1,0 +1,109 @@
+package pe.nasqa.values.dao;
+
+import java.util.Date;
+import java.util.List;
+
+import pe.nasqa.values.model.entity.Cliente;
+import pe.nasqa.values.model.entity.CordinacionPDF;
+import pe.nasqa.values.model.entity.Distribucion;
+import pe.nasqa.values.model.entity.DistribucionCoord;
+import pe.nasqa.values.model.entity.DistribucionCoordTelf;
+import pe.nasqa.values.model.entity.DistribucionPaquete;
+import pe.nasqa.values.model.entity.DistribucionVisita;
+import pe.nasqa.values.model.entity.Estados;
+import pe.nasqa.values.model.entity.ExportBaseCourier;
+import pe.nasqa.values.model.entity.ExportVisita;
+import pe.nasqa.values.model.entity.OrdenProceso;
+import pe.nasqa.values.model.entity.OrdenProcesoAvance;
+import pe.nasqa.values.model.entity.OrdenProcesoCargos;
+import pe.nasqa.values.model.entity.ReporteBBVAentr;
+import pe.nasqa.values.model.entity.ReporteBBVApend;
+import pe.nasqa.values.model.entity.ReporteBBVAworkf;
+import pe.nasqa.values.model.entity.ReporteBCPdetalleGen;
+import pe.nasqa.values.model.entity.ReporteBCPtc;
+import pe.nasqa.values.model.entity.ReporteCoordinacionDia;
+import pe.nasqa.values.model.entity.ReporteEnvioProv;
+import pe.nasqa.values.model.entity.ReporteGNB;
+import pe.nasqa.values.model.entity.ReporteGNBtoken;
+import pe.nasqa.values.model.entity.ReporteGNBvales;
+import pe.nasqa.values.model.entity.ReporteHerbalife;
+import pe.nasqa.values.model.entity.ReporteOrbinGestion;
+import pe.nasqa.values.model.entity.ReporteRevistas;
+import pe.nasqa.values.model.entity.Valorado;
+
+public interface DistribucionDao {
+	Distribucion getById(int id);
+	List<Distribucion> findDistCodName(String codBar, String nroRef, String docIde, String nomDes, String codCli);
+	List<Distribucion> findDistOrdPro(String ordPro, String codCli);
+	Distribucion getByCodBar(String codBar, String codCli);
+	void updateDistribucion(Distribucion distrib);
+	
+	List<DistribucionVisita> findVisitas(String codBar);
+	List<DistribucionCoord> findCoordinaciones(String codBar);
+	List<DistribucionCoordTelf> findCoordinacionesTelef(String codBar);
+	List<DistribucionPaquete> findPaquetes(String codBar);
+	List<DistribucionPaquete> findPaqueteCodName(String nroDoc, String nomDes, String codCli);
+	
+	List<DistribucionCoord> findDirEntrega(String codBar, Date fecCoo);
+	
+	OrdenProceso getOPInfo(String ordPro, String codCli);
+	List<OrdenProcesoAvance> getOPAvance(String ordPro, String codCli);
+	List<OrdenProcesoCargos> getOPCargos(String ordPro, String codCli);
+	
+	List<OrdenProceso> getOPsInfo(List<String> ordPro, String codCli);
+	List<OrdenProceso> getOPsInfo(Date fromDate, Date toDate, String codCli);
+	String[] findOpsInfoUnicos(Date fromDate, Date toDate, String codCli);	
+	List<Estados> getEstadosToComboBox(String tipo, String idPadre, String codigo_cliente);
+	Estados getEstadoByIdEstado(String id_estado);
+	void saveDistribucion(DistribucionVisita distribucionVisita);
+	CordinacionPDF getCordinacionPDFUno(String id_cordinacion);
+	List<CordinacionPDF> getCordinacionPDFVarios(Date fec_coo, String cod_msj);
+	List<ExportVisita> getVisitasFromUI(Date fec_inicio, Date fec_fin, String reDescarga);
+	boolean updateVisita(String id_visita, String descargado);
+	List<ExportBaseCourier> getBaseCourier(String ordenProceso, String cod_msj);
+	List<ReporteGNB> getReporteGNB(String fec_inicio, String fec_fin);
+	List<ReporteBCPtc> getReporteBCPtc(String fec_inicio, String fec_fin);
+	List<ReporteHerbalife> getReporteHerbalife(String fec_inicio, String fec_fin);
+	List<ReporteBBVApend> getReporteBBVApend(String fec_inicio, String fec_fin);
+	List<ReporteBBVAentr> getReporteBBVAentr(String fec_inicio, String fec_fin);
+	List<ReporteBBVAworkf> getReporteBBVAworkf(String fec_inicio, String fec_fin);
+	List<ReporteGNBvales> getReporteGNBvales(String fec_inicio, String fec_fin);
+	List<ReporteGNBtoken> getReporteGNBtoken(String fec_inicio, String fec_fin);
+	List<ReporteOrbinGestion> getReporteOrbinGestion(String fec_inicio, String fec_fin,int sw);
+	List<ReporteBCPdetalleGen> getReporteBCPdetalleGen(String fec_inicio, String fec_fin);
+	List<ReporteRevistas> getReporteRevistas(String fec_inicio, String fec_fin);
+	List<ReporteEnvioProv> getReporteEnvioProv(String fec_inicio, String fec_fin);
+	List<ReporteCoordinacionDia> getReporteCoordinacionDia(String fec_inicio, String fec_fin);
+	
+	
+	List<Valorado> getProductoXCliente(String cod_cliente);
+	
+	List<Estados> getEstadosMotivosToComboBox(String tipo, String idPadre, String codigo_cliente);
+	Distribucion getDistribucionXCodBar(String cod_bar);	
+	
+	List<Object> getDatosXCodigo(String codigo);
+	
+	Integer idImportMax();
+	
+	List<Estados> getEstadosMotivos(String tipo, String idPadre, String codigo_cliente);
+	
+	DistribucionVisita getDistribucionVisitaXCodBar(String cod_bar);
+	
+	void delete(DistribucionVisita entity);
+	
+	void update(DistribucionVisita entity);
+	
+	DistribucionVisita getDistribucionVisitaXID(Integer id);
+	
+	List<Cliente> getClientes();
+	
+	List<Object> getGestiones(Date fecha);
+	
+	List<Object> getCodbarCoordinacion(String codBar);
+	
+	Integer getCodbarPqr(String codBar);
+	
+	List<Object> coordinacionesXCodBarFecha(String codBar,Date fecha);
+	
+	List<Object> listaCoordinacionesFecha(Date fecha);
+}

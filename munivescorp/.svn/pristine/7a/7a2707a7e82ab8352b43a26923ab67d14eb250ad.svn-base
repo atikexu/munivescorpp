@@ -1,0 +1,435 @@
+/* @font-face { font-family: "MetaPlusNormalItalic"; src: url('MetaPlusNormal-Italic.ttf'); }  */
+/* @font-face { font-family: "MetaPlusBookRoman"; src: url('meta-plus-book-roman.ttf'); } */
+
+/*990x580*/
+/*
+Am: #ffc000
+Az: #00a2ff
+*/
+* {
+    margin: 0;
+    padding: 0;
+}
+html{
+	height: 100%;
+}
+body{
+    background-attachment: fixed;
+    background-color: white;
+/*     font-family: MetaPlusBookRoman; */
+    font-family: Helvetica,Arial,sans-serif;
+/*     font-family: "Helvetica Neue", "Segoe UI", Segoe, Helvetica, Arial, "Lucida Grande", sans-serif; */
+    font-size: 14px;
+    margin: 0;
+    min-height: 100%;
+    position: relative;
+    color: #666;
+}
+
+/*Genericos*/
+h1,h2,h3,h4,h5{
+	padding: 0;
+	color: #888;
+	font-weight: lighter;
+}
+.center{text-align: center;}
+.font-s{font-size: 0.8em;}
+.font-m{font-size: 0.9em;}
+.font-l{font-size: 1.2em;}
+.font-xl{font-size: 2em;}
+/*Plantilla*/
+.menu{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px #efefef solid;
+    background-color: #fbfbfb;
+/*     background: url(../img/bg_header.jpg) repeat-x top #ffffff; */
+}
+.imagen{
+    border: 1px white solid;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.5),0 0 1px rgba(0,0,0,0.2) inset;
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.5),0 0 1px rgba(0,0,0,0.2) inset;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.5),0 0 1px rgba(0,0,0,0.2) inset;
+}
+header{
+    width: 96%;
+    max-width: 980px;
+    margin: 0 auto;
+    padding-bottom: 8px;
+    overflow: hidden;
+}
+header .logo-content-img{
+    display: block;
+    float: left;
+    width: 20%;
+    max-width: 180px;
+}
+header .logo-content-img a{
+    text-decoration: none;
+}
+header .logo-content-img .logo-img{
+    width: 100%;
+    height: auto;
+    border: 0;
+    margin-top: 12px;
+    max-width: 180px;
+}
+header .logo-content-icon{
+    display: none;
+    float: right;
+    width: 20%;
+}
+header .logo-content-icon .logo-icon{
+    padding: 2px;
+    border: 0;
+    float: left;
+    max-height: 64px;
+    width: auto;
+    height: 100%;
+}
+header .logo-content-icon .menu-btn{
+    display: block;
+    padding: 20px;
+    background: #dedede;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+}
+header .logo-content-icon span{
+    float: right;
+    font-size: 30px;
+}
+
+header nav{
+    display: block;
+    float: right;
+    width: 80%;
+}
+header nav div{
+    padding-top: 10px;
+    padding-right: 5px;
+    text-align: right;
+    font-size: 0.9em;
+    overflow: hidden;
+    text-shadow: 1px 1px 3px white;
+}
+header nav div a{
+	margin: 0 4px;
+	padding: 4px 2px;
+    color: #717171;
+    text-decoration: none;
+    text-shadow: 1px 1px 3px #fff;
+}
+header nav div a:hover{
+    color: #00a2ff;
+}
+header nav ul{
+	display: block;
+	overflow: hidden;
+    list-style: none;
+    float: right;
+}
+header nav ul li{
+    float: left;
+    max-width: 230px;
+}
+header nav ul li span{
+    margin-right: 8px;
+}
+header nav ul li a{
+    color: #555;
+    padding: 4px 8px;
+    display: block;
+    text-decoration: none;
+    text-shadow: 0px 0px 3px #fff;
+    border-bottom: 1px #fbfbfb solid;
+}
+header nav ul li .on{
+    color: #ffc000;
+    border-bottom: 1px #ffc000 solid;
+}
+header nav ul li a:hover{
+    color: #00a2ff;
+    text-shadow: 0px 0px 4px #fff;
+    border-bottom: 1px #00a2ff solid;
+}
+.sub-nav-content{
+	
+}
+header nav .sub-nav{
+	display: block;
+	font-size: 0.9em;
+	text-align: center;
+	overflow: hidden;
+}
+header nav .sub-nav li{
+    margin-right: 12px;
+}
+header nav .sub-nav li a{
+    padding: 2px;
+    text-shadow: none;
+}
+
+.content{
+    width: 96%;
+    max-width: 980px;
+    min-height: 100%;
+    position: relative;
+    margin: 0 auto;
+    padding-bottom: 24px;
+    overflow: hidden;
+}
+.banner{
+	width: 100%;
+	text-align: center;
+}
+.banner img{
+	width: 100%;
+	height: auto;
+	max-width: 970px;
+	border: 0;
+}
+
+/*view-three*/
+.view-three{
+    display: block;
+    width: 33.3%;
+    margin: 8px 0 2px 0;
+    float: left;
+    font-size: 14px;
+    overflow: hidden;
+}
+.view-three-padd{
+    padding: 4px;
+}
+.view-three-shadow{
+    border: #e8e8e8 solid 1px;
+}
+.view-three-border{
+    border: white solid 1px;
+    background-color: #f9f9f9;
+    overflow: hidden;
+}
+.view-three-content-img{
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    float: left;
+    overflow: hidden;
+}
+.view-three-content-img img{
+    width: 100%;
+    height: auto;
+    max-width: 500px;
+}
+.view-three-content-detail{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    float: right;
+    vertical-align: middle;
+}
+.view-three-detail-title{
+    width: 100%;
+    vertical-align: middle;
+    font-size: 1.5em;
+    line-height: 1.2em;
+    color: #555;
+    text-align: center;
+    overflow: hidden;
+}
+.view-three-detail-desc{
+	padding: 8px;
+    float: left;
+    font-size: 1em;
+    line-height: 1.4em;
+    color: #666;
+    text-align: justify;
+}
+
+.view-three-padding1p{
+    padding: 1%;
+}
+
+/* copy & footer*/
+.copy{
+    width: 100%;
+    height: 100px;
+    display: block;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    border-top: 1px #d7d7d7 solid;
+    background-color: #efefef;
+}
+footer{
+    width: 96%;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 5px;
+}
+.copy footer .di{
+	margin-top:12px;
+	display: block;
+	width: auto;
+	min-width: 150px;
+	float: left;
+}
+.copy footer .di a{ text-decoration: none; }
+.copy footer .di a img{ border: 0; }
+.copy footer .share{
+	margin-top:12px;
+	display: block;
+    width: auto;
+    min-width: 100px;
+    float: left;
+    font-size: 0.9em;
+    color: #999;
+}
+.copy footer .share a{
+    font-size: 1.2em;
+    text-decoration: none;
+    color: #999;
+}
+.copy footer .share a:hover{
+    color: #0076a8;
+}
+.copy footer .derechos{
+	margin-top:12px;
+	display: block;
+    width: auto;
+    float: left;
+    line-height: 150%;
+    color: #888;
+    font-size: 0.8em;
+}
+.copy footer .support{
+	margin-top:12px;
+    width: auto;
+    min-width: 50px;
+    float: right;
+    color: #d7d0ac;
+    font-size: 1.5em;
+}
+/* date picker */
+.festivos span {
+ color: red !important; //muestra rojos los festivos
+}
+.ui-datepicker-week-end span {
+ color: #333 !important; //muestra grises los fines de semana
+}
+
+/*////////////////
+// media queries
+////////////////*/
+/*min width*/
+@media screen and (max-width: 200px){
+
+}
+@media screen and (max-width: 320px){
+    .view-three{
+        width: 100%;
+    }
+}
+@media screen and (max-width: 400px){
+	
+}
+@media screen and (max-width: 500px){
+    .view-three{
+        width: 50%;
+        font-size: 10px;
+    }
+}
+@media screen and (max-width: 600px){
+    .view-three-detail-title{
+        font-size: 1.2em;
+    }
+}
+@media screen and (max-width: 700px){
+    .view-three{
+        font-size: 12px;
+    }
+
+}
+/*mobiles*/
+@media screen and (max-width:800px){
+	header{
+        width: 100%;
+    }
+    header .logo-content-img{
+        display: none;
+    }
+    header .logo-content-icon{
+        display: block;
+        width: 100%;
+        float: none;
+        z-index: 500;
+    }
+    header nav{
+        width: 280px;
+        height: 80%;
+        margin: 0;
+        left: -280px;
+        position: absolute;
+        z-index: 300;
+        background-color: #dedede;
+        border-radius: 0px 0px 10px 0px;
+		-moz-border-radius: 0px 0px 10px 0px;
+		-webkit-border-radius: 0px 0px 10px 0px;
+    }
+    header nav div{
+		font-size: 1.1em;
+	}
+	header nav div .spanUsuario{
+		display: block;
+		padding-right: 10px;
+	}
+    header nav div a{
+    	display: block;
+    	padding-top: 10px;
+    	padding-right: 24px;
+    }
+    header nav ul{
+        width: 100%;
+    }
+    header nav ul li{
+        display: block;
+        float: none;
+        width: 100%;
+        max-width: 280px;
+        text-align: left;
+    }
+    header nav ul li a{
+        display: block;
+        font-weight: bold;
+        padding: 12px 6px;
+    }
+    header nav .sub-nav{
+        background-color: #666;
+        text-align: left;
+    }
+    header nav .sub-nav li a{
+	    padding: 8px 2px 8px 28px;
+	    color: silver;
+	}
+	header nav .sub-nav li .on{
+    	color: #ffc000;
+	}
+	header nav .sub-nav li a:hover{
+	    color: #00a2ff;
+	    text-shadow: 0px 0px 4px #000;
+	}
+	.copy-spacer{
+        height: 200px;
+    }
+    .copy footer .support{
+    	display: none;
+    }
+}

@@ -1,0 +1,17 @@
+jdbc.driverClassName=org.postgresql.Driver
+jdbc.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+
+jdbc.databaseurl=jdbc:postgresql://172.24.147.23:5432/nasqa_values
+jdbc.username=postgres
+jdbc.password=p0stgr3s@
+
+    #jdbc.databaseurl=jdbc:postgresql://127.0.0.1:5432/nasqa_values
+    #jdbc.username=postgres
+    #jdbc.password=1234
+
+#jdbc.username=nasqa
+#jdbc.password=Nasqa123
+
+
+#These configurations depends on your setup

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-01-13T16:10:17 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" columnCount="2" pageWidth="595" pageHeight="842" columnWidth="297" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="0db59874-366d-4444-beb1-2fd59373caaa">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="418"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="571"/>
+	<property name="net.sf.jasperreports.print.create.bookmarks" value="false"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<parameter name="nombre" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="producto" class="java.lang.String"/>
+	<parameter name="fecha" class="java.sql.Date"/>
+	<queryString>
+		<![CDATA[SELECT cod_bar, tit_nom_ape , dir_dom_des ,
+		nom_cli, fec_pro ,
+	 	dir_lab_des, dir_opc_des ,dir_dom_dis,dir_dom_pro,dir_dom_dep,
+	 	dir_lab_dis,dir_lab_pro,dir_lab_dep,dir_opc_dis,dir_opc_pro,dir_opc_dep
+FROM distribucion
+WHERE 
+	 cod_cli =  $P{nombre} 
+AND	 fec_pro =  $P{fecha} 
+AND	 cod_pro_val =  $P{producto}
+order by cod_bar]]>
+	</queryString>
+	<field name="cod_bar" class="java.lang.String"/>
+	<field name="tit_nom_ape" class="java.lang.String"/>
+	<field name="dir_dom_des" class="java.lang.String"/>
+	<field name="nom_cli" class="java.lang.String"/>
+	<field name="fec_pro" class="java.sql.Date"/>
+	<field name="dir_lab_des" class="java.lang.String"/>
+	<field name="dir_opc_des" class="java.lang.String"/>
+	<field name="dir_dom_dis" class="java.lang.String"/>
+	<field name="dir_dom_pro" class="java.lang.String"/>
+	<field name="dir_dom_dep" class="java.lang.String"/>
+	<field name="dir_lab_dis" class="java.lang.String"/>
+	<field name="dir_lab_pro" class="java.lang.String"/>
+	<field name="dir_lab_dep" class="java.lang.String"/>
+	<field name="dir_opc_dis" class="java.lang.String"/>
+	<field name="dir_opc_pro" class="java.lang.String"/>
+	<field name="dir_opc_dep" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="138">
+			<textField>
+				<reportElement x="50" y="4" width="120" height="30" uuid="d69f391e-b023-4bf6-ba5e-c088ba79b17f"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_cli}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="190" y="4" width="100" height="30" uuid="d79cd109-87eb-44a5-bb7c-e0f07a59cff8"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fec_pro}.toString()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="27" width="100" height="19" uuid="7c27567d-5d46-480b-b746-9a513624cb49"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{cod_bar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="72" width="44" height="14" uuid="ae52d0c1-b8d7-41b5-a613-52754c9d16f9"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[1. Dom]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="64" y="72" width="216" height="30" uuid="b59ae2dc-1dc4-471d-8b18-f0304345202d"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dir_dom_des}+" "+$F{dir_dom_dep}+" "+$F{dir_dom_pro}+" "+$F{dir_dom_dis}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="93" width="44" height="20" uuid="d8bc686b-acaf-448c-9939-57e212bc947e"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[2. Lab]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="64" y="92" width="216" height="30" uuid="b4fe9e54-0e4a-4dc6-b8b6-cc4046bac215"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dir_lab_des}+" "+$F{dir_lab_dep}+" "+$F{dir_lab_pro}+" "+$F{dir_lab_dis}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="115" width="44" height="19" uuid="a28b80ed-8f4e-4a08-89ad-f045d4035f2d"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[3. Opc]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="64" y="113" width="216" height="25" uuid="025b7876-898a-4a78-be43-5477d0b222aa"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dir_opc_des}+" "+$F{dir_opc_dep}+" "+$F{dir_opc_pro}+" "+$F{dir_opc_dis}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="62" width="280" height="22" uuid="89603847-4817-40e9-9ea3-02e18283b61f"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tit_nom_ape}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="65" y="42" width="169" height="20" uuid="0ce04ec0-1335-4ea4-967f-70e6d3cd27f7">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="3of9" drawText="false" checksumRequired="false">
+					<jr:codeExpression><![CDATA[$F{cod_bar}]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<line>
+				<reportElement x="8" y="135" width="282" height="1" uuid="de8caec7-7bc5-4d9d-bd8a-b4f0d78bb7fc"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

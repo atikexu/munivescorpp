@@ -1,0 +1,159 @@
+package pe.nasqa.values.model;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import pe.nasqa.values.dao.HojaRutaDetalleDao;
+import pe.nasqa.values.model.entity.HojaRutaDetalle;
+
+@Service
+public class HojaRutaDetalleModel{
+	
+	@Autowired
+	private HojaRutaDetalleDao hojaRutaDetalleDao;
+
+	@Transactional(readOnly = true)
+	public HojaRutaDetalle findOne(long id) {
+		return hojaRutaDetalleDao.findOne(id);
+	}
+
+	@Transactional(readOnly = true)
+	public List<HojaRutaDetalle> findAll() {
+		return hojaRutaDetalleDao.findAll();
+	}
+
+	@Transactional
+	public void create(HojaRutaDetalle entity) {
+		hojaRutaDetalleDao.create(entity);
+	}
+
+	@Transactional
+	public void update(HojaRutaDetalle entity) {
+		hojaRutaDetalleDao.update(entity);
+	}
+	
+
+	@Transactional
+	public void delete(HojaRutaDetalle entity) {
+		hojaRutaDetalleDao.delete(entity);
+	}
+
+	@Transactional
+	public void deleteById(long entityId) {
+		hojaRutaDetalleDao.deleteById(entityId);
+	}
+	
+	@Transactional(readOnly = true)
+	public HojaRutaDetalle findUserByName(String hojaRuta){
+		return hojaRutaDetalleDao.findHojaRutaByName(hojaRuta);
+	}
+
+	@Transactional(readOnly = true)
+	public HojaRutaDetalle getMensajeroDetail(Integer hojaRuta){
+		return hojaRutaDetalleDao.getHojaRutaDetail(hojaRuta);
+	}
+	
+	@Transactional
+	public List<HojaRutaDetalle> getMensajeros() {
+		return hojaRutaDetalleDao.getHojaRuta();
+	}
+	
+	@Transactional
+	public List<Object> getHojaRutaXID(Integer id) {
+		return hojaRutaDetalleDao.getHojaRutaXID(id);
+	}
+	
+	@Transactional
+	public List<HojaRutaDetalle> getHojaRutaXCodBar(String cod) {
+		return hojaRutaDetalleDao.getHojaRutaXCodBar(cod);
+	}
+	
+	@Transactional
+	public List<Object> getHojaRutaXFecIdMen(Date fec, Integer idMen) {
+		return hojaRutaDetalleDao.getHojaRutaXFecIdMen(fec,idMen);
+	}
+	
+	@Transactional
+	public List<HojaRutaDetalle> getDistribucionXCodBar(String cod) {
+		return hojaRutaDetalleDao.getDistribucionXCodBar(cod);
+	}
+	
+	@Transactional
+	public List<HojaRutaDetalle> existeDistribucionXCodBar(String cod) {
+		return hojaRutaDetalleDao.existeDistribucionXCodBar(cod);
+	}
+	
+	@Transactional
+	public List<HojaRutaDetalle> getHojaRutaXCodBarFec(String cod, Date fec) {
+		return hojaRutaDetalleDao.getHojaRutaXCodBarFec(cod,fec);
+	}
+	
+	@Transactional
+	public List<HojaRutaDetalle> cantidadPiezas(Integer id_ruta) {
+		return hojaRutaDetalleDao.cantidadPiezas(id_ruta);
+	}
+	
+	@Transactional
+	public void updateXID(Integer id_ruta) {
+		hojaRutaDetalleDao.updateXID(id_ruta);
+	}
+
+	@Transactional
+	public void updateDetalleXID(Integer id_ruta) {
+		hojaRutaDetalleDao.updateDetalleXID(id_ruta);
+	}
+	
+	@Transactional
+	public void deleteDetalleXIdRuta(Integer id_ruta) {
+		hojaRutaDetalleDao.deleteDetalleXIdRuta(id_ruta);
+	}
+	
+	@Transactional
+	public List<Object> listaClientesXIdRuta(Integer idRuta) {
+		return hojaRutaDetalleDao.listaClientesXIdRuta(idRuta);
+	}
+	
+	@Transactional
+	public List<Object> listaEntregados(Integer idRuta) {
+		return hojaRutaDetalleDao.listaEntregados(idRuta);
+	}
+	
+	@Transactional
+	public HojaRutaDetalle getDetalleXIdDetalle(Integer id)  {
+		return hojaRutaDetalleDao.getDetalleXIdDetalle(id);
+	}
+	
+	@Transactional
+	public HojaRutaDetalle getDetalleXCodBarIdRendicion(Integer id,String codBar)  {
+		return hojaRutaDetalleDao.getDetalleXCodBarIdRendicion(id,codBar);
+	}
+	
+	@Transactional
+	public List<Object> listaCargados(Integer idRuta) {
+		return hojaRutaDetalleDao.listaCargados(idRuta);
+	}
+	
+	@Transactional
+	public List<Object> existeCodEnHojaRuta(Integer idRuta,String codBarDet) {
+		return hojaRutaDetalleDao.existeCodEnHojaRuta(idRuta,codBarDet);
+	} 
+	
+	@Transactional
+	public List<Object> cantidadHojaRutaDetalle(Integer id_ruta){
+		return hojaRutaDetalleDao.cantidadHojaRutaDetalle(id_ruta);
+	}
+	
+	@Transactional
+	public List<HojaRutaDetalle> getHojaRutaRendicionXCodBarFec(String cod, Date fec){
+		return hojaRutaDetalleDao.getHojaRutaRendicionXCodBarFec(cod,fec);
+	}
+	
+	@Transactional
+	public List<HojaRutaDetalle> getConGestion(String cod){
+		return hojaRutaDetalleDao.getConGestion(cod);
+	}
+}

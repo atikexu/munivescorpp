@@ -1,0 +1,886 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package pe.nasqa.values.control;
+
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+
+import pe.dataimagenes.utils.Constantes;
+import pe.dataimagenes.utils.LogService;
+import pe.dataimagenes.utils.Utils;
+import pe.nasqa.values.control.ClienteEnum;
+
+public class SCPFile {
+
+    final static String SFTPHOST = Constantes.SFTPHOST;
+    final static String SFTPHOSTE = Constantes.SFTPHOSTE;
+    final static int SFTPPORT = Constantes.SFTPPORT;
+    final static String SFTPUSER = Constantes.SFTPUSER;
+    final static String SFTPPASS = Constantes.SFTPPASS;
+    final static String SSH = Constantes.SSH;
+    final static String PPK = Constantes.PPK;
+    final static String SFTPWORKINGDIR = Constantes.SFTPWORKINGDIR;
+    
+    JSch jSch = null;
+    Session session = null;
+    Channel channel = null;
+    ChannelSftp channelSftp = null;
+    OutputStream out = null;
+    InputStream in = null;
+    ChannelExec channelExec = null;
+
+    public boolean crearCarpetaDia(String directorio,String carpetaFecha) {
+        boolean proceso = false;
+
+        try {
+            JSch jsch = new JSch();
+            jsch.addIdentity(SSH, SFTPPASS);
+            session = jsch.getSession(SFTPUSER, SFTPHOST);
+            //session.setPassword(SFTPPASS);
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            config.put("UserKnownHostsFile", "/dev/null");
+            session.setConfig(config);
+            session.connect();
+            //System.out.println("session is alive:" + session.isConnected());
+            channel = session.openChannel("shell");
+            channel.connect();
+            //System.out.println("shell channel connected....");
+            out = channel.getOutputStream();
+            PrintStream ps = new PrintStream(out, true);
+            in = channel.getInputStream();
+            
+            //commands
+            ps.println("cd '" + directorio + "'");
+            ps.println("mkdir " + carpetaFecha);
+            ps.println("cd " + carpetaFecha);
+            ps.println("mkdir PROCESADO");
+            ps.println("mkdir PENDIENTE");
+            //ps.println("mkdir ERROR");
+            ps.println("exit");
+            ps.close();
+            
+            printResult(in, channel);
+            in.close();
+            out.close();
+            channel.disconnect();
+            session.disconnect();
+            proceso = true;
+        } catch (Exception ex) {
+            proceso = false;
+            ex.printStackTrace();
+            System.out.println("error " + ex.getMessage());
+            LogService.logSystem("Error " + ex.getMessage() + " " + new Date());
+            for (StackTraceElement element : ex.getStackTrace()) {
+                LogService.logSystem(element.toString());
+            }
+        }
+        return proceso;
+    }
+
+    /**
+     * Lista los archivos de un directorio y recupera los archivo
+     *
+     * @param condicional: valor 1 para archivos csv o 2 para directorios
+     * @param directorio: directorio del scp a listar
+     * @return: lista de archivos .csv o directorios
+     *
+     */
+    public List<String> listFileSCP(String subfolder, String directorio) {
+        ArrayList<String> salida = new ArrayList<String>();
+        try {
+            channel = session.openChannel("exec");
+            out = channel.getOutputStream();
+            in = channel.getInputStream();
+            System.out.println("listFileSCP:" + SFTPWORKINGDIR + directorio);
+            //String command = "ls -l " + SFTPWORKINGDIR+directorio + "";
+            String command = "ls -l '" + SFTPWORKINGDIR + subfolder + "/" + directorio + "'";
+            ((ChannelExec) channel).setCommand(command);
+            channel.connect();
+            System.out.println("Commandos ejecutados");
+            in = channel.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            String linea = null;
+            int index = 0;
+            System.out.println("Comienzo a listar");
+            while ((linea = reader.readLine()) != null) {
+                System.out.println("linea:" + linea);
+                if (linea.toLowerCase().contains("txt")) {
+                    //String[] aux = linea.split("PE-");
+                    //salida.add(directorio + "PE-" + aux[aux.length - 1]);
+                    String[] aux = linea.split(" ");
+                    salida.add(directorio + "/" + aux[aux.length - 1]);
+                }
+                index++;
+                System.out.println(index + " : " + linea);
+                if (channel.isClosed()) {
+                    System.out.println("exit-status: " + channel.getExitStatus());
+                    break;
+                }
+            }
+            channel.disconnect();
+            System.out.println("------ FIN");
+        } catch (JSchException e) {
+            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (Exception ex1) {
+            ex1.printStackTrace();
+        }
+        return salida;
+    }
+
+    /**
+     * Lista los archivos de un directorio
+     *
+     * @param directorio: directorio del scp a listar
+     * @return: lista de archivos .csv Se usara un archivo zzzzzzz como
+     * indicador del final
+     */
+    public List<String> listFileSSH(String subfolder, String directorio) {
+        ArrayList<String> salida = new ArrayList<String>();
+        try {
+            channel = session.openChannel("shell");
+            out = channel.getOutputStream();
+            in = channel.getInputStream();
+            channel.connect();
+            out.write(("cd '" + SFTPWORKINGDIR + subfolder + directorio + "'\n").getBytes());
+            out.flush();
+            out.write(("ls -l" + "\n").getBytes());
+            out.flush();
+            System.out.println("Commandos ejecutados");
+            in = channel.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            String linea = null;
+            int index = 0;
+            System.out.println("Comienzo a listar");
+            channel.disconnect();
+            while ((linea = reader.readLine()) != null) {
+                if (linea.toLowerCase().contains(".txt")) {
+                    String[] aux = linea.split(" ");
+                    salida.add(directorio + "/" + aux[aux.length - 1]);
+                    System.out.println("Agrego: " + directorio + "/" + aux[aux.length - 1]);
+                }
+                System.out.println(linea);
+            }
+
+            System.out.println("------ FIN");
+        } catch (JSchException e) {
+            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (Exception ex1) {
+            ex1.printStackTrace();
+        }
+        return salida;
+    }
+
+    /**
+     * Metodo para descargar archivo
+     *
+     * @param rfile: localizacion del archivo en el sftp
+     * @param lfile: localizacion local del archivo
+     */
+    public void downloadFileSCP(String rfile, String lfile) {
+
+        byte[] buf = new byte[1024];
+        // send '\0'
+        buf[0] = 0;
+        FileOutputStream fos = null;
+
+        try {
+            channel = session.openChannel("exec");
+            out = channel.getOutputStream();
+            in = channel.getInputStream();
+            String command = "scp -f '" + SFTPWORKINGDIR + rfile + "'\n";
+            System.out.println("downloadFileSCP:" + SFTPWORKINGDIR + rfile);
+            ((ChannelExec) channel).setCommand(command);
+            channel.connect();
+            System.out.println("Conectado al canal");
+            //out.write(command.getBytes());
+            //out.flush();
+            out.write(buf, 0, 1);
+            out.flush();
+            while (true) {
+                int c = checkAck(in);
+                if (c != 'C') {
+                    break;
+                }
+
+                // read '0644 '
+                in.read(buf, 0, 5);
+
+                long filesize = 0L;
+                while (true) {
+                    if (in.read(buf, 0, 1) < 0) {
+                        // error
+                        System.out.println("Error");
+                        break;
+                    }
+                    if (buf[0] == ' ') {
+                        break;
+                    }
+                    filesize = filesize * 10L + (long) (buf[0] - '0');
+                }
+
+                String file = null;
+                for (int i = 0;; i++) {
+                    in.read(buf, i, 1);
+                    if (buf[i] == (byte) 0x0a) {
+                        file = new String(buf, 0, i);
+                        break;
+                    }
+                }
+
+                System.out.println("filesize=" + filesize + ", file=" + file);
+                // send '\0'
+                buf[0] = 0;
+                out.write(buf, 0, 1);
+                out.flush();
+                System.out.print("Comensando a crear el archivo");
+                // read a content of lfile
+                fos = new FileOutputStream(lfile);
+                int foo;
+                while (true) {
+                    if (buf.length < filesize) {
+                        foo = buf.length;
+                    } else {
+                        foo = (int) filesize;
+                    }
+                    foo = in.read(buf, 0, foo);
+                    if (foo < 0) {
+                        // error 
+                        break;
+                    }
+                    fos.write(buf, 0, foo);
+                    filesize -= foo;
+                    if (filesize == 0L) {
+                        break;
+                    }
+                }
+                fos.close();
+                fos = null;
+
+                if (checkAck(in) != 0) {
+                    System.out.println("Hubo error en in = 0");
+                    System.exit(0);
+                }
+
+                // send '\0'
+                System.out.println("Terminando de copiar el archivo");
+                buf[0] = 0;
+                out.write(buf, 0, 1);
+                out.flush();
+            }
+            channel.disconnect();
+            //session.disconnect();
+            //System.exit(0);
+        } catch (Exception e) {
+            System.out.println(e);
+            try {
+                if (fos != null) {
+                    fos.close();
+                }
+            } catch (Exception ee) {
+            }
+        }
+    }
+
+    /**
+     * Metodo para subir un archivo al sftp
+     *
+     * @param uploadFile: archivo a subir al sftp
+     * @param remoteDir: directorio al cual quieres subirlo
+     */
+    public void uploadFileSCP(File uploadFile, String remoteDir) {
+        System.out.println("++++++SCP START");
+        FileInputStream fis = null;
+        try {
+            channel = session.openChannel("exec");
+            out = channel.getOutputStream();
+            in = channel.getInputStream();
+            String command = "scp -p -t '" + SFTPWORKINGDIR + "pagoefectivo" + remoteDir + uploadFile.getName() + "'";
+            ((ChannelExec) channel).setCommand(command);
+            channel.connect();
+            System.out.println("Ejecutando commando: " + command);
+            System.out.println("Comiensa la subida");
+            int ack = checkAck(in);
+            if (ack != 0) {
+                throw new IllegalStateException("checkAck failed value " + ack);
+            }
+
+            fis = new FileInputStream(uploadFile.getAbsolutePath());
+            // Messure length
+            long filesize = uploadFile.length();
+            command = "C0644 " + filesize + " ";
+            System.out.println(filesize);
+            if (uploadFile.getAbsolutePath().lastIndexOf('/') > 0) {
+                command += uploadFile.getAbsolutePath().substring(uploadFile.getAbsolutePath().lastIndexOf('/') + 1);
+            } else {
+                command += uploadFile.getAbsolutePath();
+            }
+            command += "\n";
+            System.out.println(command);
+            out.write(command.getBytes());
+            out.flush();
+            /*ack = checkAck(in);
+             if (ack != 0) {
+             throw new IllegalStateException("checkAck failed value " + ack);
+             }*/
+            // send a content of lfile
+            byte[] buf = new byte[1024];
+            while (true) {
+                int len = fis.read(buf, 0, buf.length);
+                System.out.println(len);
+                if (len <= 0) {
+                    break;
+                }
+                out.write(buf, 0, len);//out.flush();
+            }
+            fis.close();
+            fis = null;
+            // send '\0'
+            buf[0] = 0;
+            out.write(buf, 0, 1);
+            out.flush();
+            /*ack = checkAck(in);
+             if (ack != 0) {
+             throw new IllegalStateException("checkAck failed value " + ack);
+             }*/
+            channel.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+            } catch (Exception ee) {
+            }
+        }
+    }
+
+    /**
+     * Metodo para eliminar un archivo del sftp
+     *
+     * @param rfile: archivo a eliminar dentro del sftp
+     */
+    public void deleteFileSCP(String rfile) {
+        try {
+            channel = session.openChannel("exec");
+            out = channel.getOutputStream();
+            in = channel.getInputStream();
+            String command = "rm -f '" + SFTPWORKINGDIR + rfile + "'";
+            ((ChannelExec) channel).setCommand(command);
+            System.out.println("Se elimino el archivo en: " + rfile);
+            channel.connect();
+            channel.disconnect();
+        } catch (JSchException ex) {
+            ex.printStackTrace();
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+    }
+
+    /**
+     * Metodo para desconectarse del sftp
+     */
+    public void disconect() {
+        try {
+            System.out.println("Saliendo del SFTP");
+            if (!in.equals(null)) {
+                in.close();
+            }
+            if (!out.equals(null)) {
+                out.close();
+            }
+            //channel.disconnect();
+            session.disconnect();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    static int checkAck(InputStream in) throws IOException {
+        int b = in.read();
+        // b may be 0 for success,
+        //          1 for error,
+        //          2 for fatal error,
+        //          -1
+        if (b == 0) {
+            return b;
+        }
+        if (b == -1) {
+            return b;
+        }
+
+        if (b == 1 || b == 2) {
+            StringBuffer sb = new StringBuffer();
+            int c;
+            do {
+                c = in.read();
+                sb.append((char) c);
+            } while (c != '\n');
+            if (b == 1) { // error
+                System.out.print(sb.toString());
+            }
+            if (b == 2) { // fatal error
+                System.out.print(sb.toString());
+            }
+        }
+        return b;
+    }
+
+    private static void printResult(InputStream input, Channel channel) throws Exception {
+        int SIZE = 1024;
+        byte[] tmp = new byte[SIZE];
+        while (true) {
+            while (input.available() > 0) {
+                int i = input.read(tmp, 0, SIZE);
+                if (i < 0) {
+                    break;
+                }
+                System.out.print(new String(tmp, 0, i));
+            }
+            if (channel.isClosed()) {
+                System.out.println("exit-status: " + channel.getExitStatus());
+                break;
+            }
+            try {
+                Thread.sleep(300);
+            } catch (Exception ee) {
+            }
+        }
+    }
+
+    public List<String> obtenerListadoArchivos(String rutaCarpeta, String directorio) {
+        ArrayList<String> salida = new ArrayList<String>();
+        try {
+            JSch jsch = new JSch();
+            String rutaArchivos = "/home/radar/preproceso/BCP/04112016/ENTRADA";
+            System.out.println("RUTA DE ARCHIVOS: "+rutaArchivos);
+            jsch.addIdentity(SSH, SFTPPASS);
+            session = jsch.getSession(SFTPUSER, SFTPHOST, SFTPPORT);
+//            session.setPassword(SFTPPASS);
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            config.put("UserKnownHostsFile", "/dev/null");
+            session.setConfig(config);
+            session.connect();
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+            String home = channelSftp.getHome();
+            System.out.println("home:"+home);
+            Vector homelist = channelSftp.ls(home);
+            System.out.println("homelist:"+homelist);
+            String rutaFinal = home  + rutaArchivos;
+            System.out.println("rutaFinal:"+rutaFinal);
+            channelSftp.cd(rutaFinal);
+            Vector filelist = channelSftp.ls(rutaFinal);
+            for (int i = 0; i < filelist.size(); i++) {
+             //   if (filelist.get(i).toString().toLowerCase().contains(".txt")) {
+            	if (filelist.get(i).toString().toUpperCase().contains(".xlsx")) {
+                    String[] aux = filelist.get(i).toString().split(" ");
+                    salida.add(home + rutaArchivos + "/" + aux[aux.length - 1]);                    
+                }
+                System.out.println(filelist.get(i).toString());
+            }
+            channel.disconnect();
+            channelSftp.disconnect();
+            session.disconnect();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return salida;
+    }
+
+    public void descargarArchivo(String archivo, String rutaDestino) {
+        /*
+        String arrayArchivo[] = archivo.split("/");
+        String nombreArchivo = new Date().getTime()+" "+arrayArchivo[arrayArchivo.length - 1];
+        */
+        try {
+            JSch jsch = new JSch();
+            jsch.addIdentity(SSH, SFTPPASS);
+            session = jsch.getSession(SFTPUSER, SFTPHOST, SFTPPORT);
+            session.setPassword(SFTPPASS);
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            config.put("UserKnownHostsFile", "/dev/null");
+            session.setConfig(config);
+            System.out.println("ANTES CONECT");
+            session.connect();
+            System.out.println("DESPUES CONECT");
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+            byte[] buffer = new byte[1024];
+            BufferedInputStream bis = new BufferedInputStream(channelSftp.get(archivo));
+            File newFile = new File(rutaDestino + "archivo_descargado.csv");
+            OutputStream os = new FileOutputStream(newFile);
+            BufferedOutputStream bos = new BufferedOutputStream(os);
+            int readCount;
+            while ((readCount = bis.read(buffer)) > 0) {
+                System.out.println("Writing: ");
+                bos.write(buffer, 0, readCount);
+            }
+            bis.close();
+            bos.close();
+            channel.disconnect();
+            channelSftp.disconnect();
+            session.disconnect();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    
+  //--------------CP 27/11 -------
+    public String uploadFileToSFTP2(String archivo, String rutaDestino) {
+        /*
+        String arrayArchivo[] = archivo.split("/");
+        String nombreArchivo = new Date().getTime()+" "+arrayArchivo[arrayArchivo.length - 1];
+        */
+    String sw ="1"; 
+        try {
+            JSch jsch = new JSch();
+            jsch.addIdentity(SSH, SFTPPASS);
+            session = jsch.getSession(SFTPUSER, SFTPHOST, SFTPPORT);
+            session.setPassword(SFTPPASS);
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            config.put("UserKnownHostsFile", "/dev/null");
+            session.setConfig(
+                    "PreferredAuthentications", 
+                    "publickey,keyboard-interactive,password");
+            session.setConfig(config);
+            System.out.println("ANTES CONECT");
+            session.connect();
+            System.out.println("DESPUES CONECT");
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+            File uploadFile = new File(archivo);
+            InputStream targetStream = new FileInputStream(uploadFile);
+            channelSftp.put(targetStream, rutaDestino+"/"+uploadFile.getName());
+            channel.disconnect();
+            channelSftp.disconnect();
+            session.disconnect();
+        } catch (Exception ex) {
+            sw="2";
+        	ex.printStackTrace();
+        }
+        return sw;
+    }
+    
+    public void uploadFileToSFTP(String archivo, String rutaDestino) {
+        /*
+        String arrayArchivo[] = archivo.split("/");
+        String nombreArchivo = new Date().getTime()+" "+arrayArchivo[arrayArchivo.length - 1];
+        */
+        try {
+            JSch jsch = new JSch();
+            jsch.addIdentity(SSH, SFTPPASS);
+            session = jsch.getSession(SFTPUSER, SFTPHOST, SFTPPORT);
+            session.setPassword(SFTPPASS);
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            config.put("UserKnownHostsFile", "/dev/null");
+            session.setConfig(config);
+            System.out.println("ANTES CONECT");
+            session.connect();
+            System.out.println("DESPUES CONECT");
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+            File uploadFile = new File(archivo);
+            InputStream targetStream = new FileInputStream(uploadFile);
+            channelSftp.put(targetStream, rutaDestino+"/"+uploadFile.getName());
+            channel.disconnect();
+            channelSftp.disconnect();
+            session.disconnect();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("erorr  : "+ ex.toString());
+        }
+    }
+
+    public void moverArchivo(String rutaArchivo,String carpeta) {
+      //  String rutaDestino = rutaArchivo.replace("PENDIENTE", carpeta);
+        String rutaDestino = carpeta;
+        try {
+            JSch jsch = new JSch();
+            jsch.addIdentity(SSH, SFTPPASS);
+            session = jsch.getSession(SFTPUSER, SFTPHOST, SFTPPORT);
+            session.setPassword(SFTPPASS);
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            config.put("UserKnownHostsFile", "/dev/null");
+            session.setConfig(config);
+            session.connect();
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+            if (channelSftp.get(rutaArchivo) != null) {
+                System.out.println("MOVIENDO..");
+                System.out.println("ORIGEN: "+rutaArchivo);
+                System.out.println("DESTINO: "+rutaDestino);
+                channelSftp.rename(rutaArchivo, rutaDestino);
+            }
+            channel.disconnect();
+            channelSftp.disconnect();
+            session.disconnect();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+  
+    Vector obtenerListaCarpetas(String carpeta) {
+       Vector listaCliente=null;
+        try {
+        JSch jsch = new JSch();
+            //String rutaArchivos = SFTPWORKINGDIR + directorio;
+            jsch.addIdentity(SSH, SFTPPASS);
+            session = jsch.getSession(SFTPUSER, SFTPHOST, SFTPPORT);
+//            session.setPassword(SFTPPASS);
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            config.put("UserKnownHostsFile", "/dev/null");
+            session.setConfig(config);
+            session.connect();
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+            String home = channelSftp.getHome()+carpeta;
+            System.out.println(home);
+            listaCliente = channelSftp.ls(home);
+            channel.disconnect();
+            channelSftp.disconnect();
+            session.disconnect();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        return listaCliente;
+    }
+    
+    /*
+     * METODO GLOBAL BUSCA, COPIA Y MUEVE LOS ARCHIVOS ENCONTRADOS EN EL SERVIDOR FTP
+     */
+    
+    public boolean obtenerArchivosParaProceso(){
+    	boolean output = false;
+    	try {
+            JSch jsch = new JSch();
+            String rutaArchivos = "/home/radar/preproceso/BCP/04112016/PENDIENTE";
+            System.out.println("RUTA DE ARCHIVOS: "+rutaArchivos);
+            jsch.addIdentity(SSH, SFTPPASS);
+            session = jsch.getSession(SFTPUSER, SFTPHOST, SFTPPORT);
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            config.put("UserKnownHostsFile", "/dev/null");
+            session.setConfig(config);
+            session.connect();
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+            String home = channelSftp.getHome();
+            System.out.println("home:"+home);
+            String rutaFinal = home  + rutaArchivos;
+            System.out.println("rutaFinal:"+rutaFinal);
+            channelSftp.cd(rutaFinal);
+            Vector filelist = channelSftp.ls(rutaFinal);
+            for (int i = 0; i < filelist.size(); i++) {
+            
+            	if (filelist.get(i).toString().toLowerCase().contains("xlsx")) {
+                    String[] aux = filelist.get(i).toString().split(" ");
+                    String archivoCliente = home + rutaArchivos + "/"+ aux[aux.length - 1];
+                    //System.out.println(home + rutaArchivos + "/"+ aux[aux.length - 1]);
+                    byte[] buffer = new byte[1024];
+                    BufferedInputStream bis = new BufferedInputStream(channelSftp.get(archivoCliente));
+                    File newFile = new File("E:/GBRADAR/PROCESADOS" +  "/"+ aux[aux.length - 1]);
+                    OutputStream os = new FileOutputStream(newFile);
+                    BufferedOutputStream bos = new BufferedOutputStream(os);
+                    int readCount;
+                    while ((readCount = bis.read(buffer)) > 0) {
+                        System.out.println("Writing: ");
+                        bos.write(buffer, 0, readCount);
+                    }
+                    bis.close();
+                    bos.close();
+                    //MOVEMOS EL ARCHIVO UNA VEZ COPIADO
+                    channelSftp.rename(archivoCliente, archivoCliente.replace("PENDIENTE", "PROCESO"));
+                }
+            
+            }
+            channel.disconnect();
+            channelSftp.disconnect();
+            session.disconnect();
+            output = true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    	return output;
+    }
+    
+    public ClienteEnum obtCliente(String nombreCliente){
+		if(nombreCliente.equals(ClienteEnum.GNB.toString())){
+			return ClienteEnum.GNB;
+		}else if(nombreCliente.equals(ClienteEnum.BCP.toString())){
+			return ClienteEnum.BCP;
+		}else if(nombreCliente.equals(ClienteEnum.BBVA.toString())){
+			return ClienteEnum.BBVA;
+		}else if(nombreCliente.equals(ClienteEnum.TEBCA.toString())){
+			return ClienteEnum.TEBCA;
+		}else if(nombreCliente.equals(ClienteEnum.SERVITEBCA.toString())){
+			return ClienteEnum.SERVITEBCA;
+		}else if(nombreCliente.equals(ClienteEnum.CENCOSUD.toString())){
+			return ClienteEnum.CENCOSUD;
+		}else if(nombreCliente.equals(ClienteEnum.HERBALIFE.toString())){
+			return ClienteEnum.HERBALIFE;
+		}else if(nombreCliente.equals(ClienteEnum.INTERBANK.toString())){
+			return ClienteEnum.INTERBANK;
+		}else if(nombreCliente.equals(ClienteEnum.AFP_PROFUTURO.toString())){
+			return ClienteEnum.AFP_PROFUTURO;
+		}else if(nombreCliente.equals(ClienteEnum.DIGITAL_COMMERCE_SAC.toString())){
+			return ClienteEnum.DIGITAL_COMMERCE_SAC;
+		}else if(nombreCliente.equals(ClienteEnum.ORBIS_VENTURES.toString())){
+			return ClienteEnum.ORBIS_VENTURES;
+		}else{
+			// cliente no existe
+			return null;
+		}
+	}
+    
+    public boolean findFilesToExecute() {
+        boolean proceso = false;
+		ClienteEnum clienteEnum = null;
+
+        try {
+            JSch jsch = new JSch();
+            jsch.addIdentity(SSH, SFTPPASS);
+            session = jsch.getSession(SFTPUSER, SFTPHOST);
+            //session.setPassword(SFTPPASS);
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            config.put("UserKnownHostsFile", "/dev/null");
+            session.setConfig(config);
+            session.connect();
+            //System.out.println("session is alive:" + session.isConnected());
+            channel = session.openChannel("shell");
+            channel.connect();
+            //System.out.println("shell channel connected....");
+            out = channel.getOutputStream();
+            PrintStream ps = new PrintStream(out, true);
+            in = channel.getInputStream();
+            for(String cliente : Constantes.listaClientes){
+            	//CREAMOS CARPETAS EN EL FTP
+            	clienteEnum = obtCliente(cliente);
+            	//commands
+                ps.println("cd '" + clienteEnum.getRutaFTP() + "'");
+                ps.println("mkdir " + Utils.getFechaISO());
+                ps.println("cd " + Utils.getFechaISO());
+                ps.println("mkdir PROCESADO");
+                ps.println("mkdir PENDIENTE");
+                
+                //CREAMOS CARPETAS LOCALMENTE
+                File file = new File(clienteEnum.getRutaServer()+"/"+Utils.getFechaISO());
+                System.out.println("local->"+file.getAbsolutePath());
+                if(!file.exists()){
+                	file.mkdirs();
+                	new File(clienteEnum.getRutaServer()+"/"+Utils.getFechaISO()+"/PENDIENTE").mkdir();
+                	new File(clienteEnum.getRutaServer()+"/"+Utils.getFechaISO()+"/PROCESADO").mkdir();
+                	new File(clienteEnum.getRutaServer()+"/"+Utils.getFechaISO()+"/ERROR").mkdir();
+                }
+            }
+            ps.println("exit");
+            ps.close();
+            
+            printResult(in, channel);
+            in.close();
+            out.close();
+            channel.disconnect();
+            /*CONEXION SFTP*/
+            
+            String rutaArchivos = "";
+            channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+            String home = channelSftp.getHome();
+            System.out.println("home:"+home);
+            
+            for(String cliente : Constantes.listaClientes){
+            	clienteEnum = obtCliente(cliente);
+            	rutaArchivos = clienteEnum.getRutaFTP()+"/"+Utils.getFechaISO()+"/PENDIENTE";
+				String rutaFinal = home  + rutaArchivos;
+	            System.out.println("rutaFinal:"+rutaFinal);
+	            channelSftp.cd(rutaFinal);
+	            Vector filelist = channelSftp.ls(rutaFinal);
+	            for (int i = 0; i < filelist.size(); i++) {
+	            
+	            	if (filelist.get(i).toString().toLowerCase().contains("xlsx")) {
+	                    String[] aux = filelist.get(i).toString().split(" ");
+	                    String archivoCliente = home + rutaArchivos + "/"+ aux[aux.length - 1];
+	                    byte[] buffer = new byte[1024];
+	                    BufferedInputStream bis = new BufferedInputStream(channelSftp.get(archivoCliente));
+	                    File newFile = new File(clienteEnum.getRutaServer() +  "/"+Utils.getFechaISO()+"/PENDIENTE/"+ aux[aux.length - 1]);
+	                    OutputStream os = new FileOutputStream(newFile);
+	                    BufferedOutputStream bos = new BufferedOutputStream(os);
+	                    int readCount;
+	                    while ((readCount = bis.read(buffer)) > 0) {
+	                        System.out.println("Writing: ");
+	                        bos.write(buffer, 0, readCount);
+	                    }
+	                    bis.close();
+	                    bos.close();
+	                    //MOVEMOS EL ARCHIVO UNA VEZ COPIADO
+	                    channelSftp.rename(archivoCliente, archivoCliente.replace("PENDIENTE", "PROCESADO"));
+	                }
+	            
+	            }
+            }
+            channel.disconnect();
+            channelSftp.disconnect();
+            /*TERMINO CONEXION SFTP*/
+            
+            session.disconnect();
+            proceso = true;
+        } catch (Exception ex) {
+            proceso = false;
+            ex.printStackTrace();
+            System.out.println("error " + ex.getMessage());
+            LogService.logSystem("Error " + ex.getMessage() + " " + new Date());
+            for (StackTraceElement element : ex.getStackTrace()) {
+                LogService.logSystem(element.toString());
+            }
+        }
+        return proceso;
+    }
+}

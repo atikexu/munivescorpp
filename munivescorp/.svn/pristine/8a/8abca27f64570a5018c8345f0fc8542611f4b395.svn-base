@@ -1,0 +1,931 @@
+package pe.nasqa.values.dao.imp;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import pe.nasqa.values.dao.DVConstante;
+import pe.nasqa.values.dao.DistribucionDao;
+import pe.nasqa.values.model.entity.Cliente;
+import pe.nasqa.values.model.entity.CordinacionPDF;
+import pe.nasqa.values.model.entity.Distribucion;
+import pe.nasqa.values.model.entity.DistribucionCoord;
+import pe.nasqa.values.model.entity.DistribucionCoordTelf;
+import pe.nasqa.values.model.entity.DistribucionPaquete;
+import pe.nasqa.values.model.entity.DistribucionVisita;
+import pe.nasqa.values.model.entity.Estados;
+import pe.nasqa.values.model.entity.ExportBaseCourier;
+import pe.nasqa.values.model.entity.ExportVisita;
+import pe.nasqa.values.model.entity.HojaRuta;
+import pe.nasqa.values.model.entity.HojaRutaDetalle;
+import pe.nasqa.values.model.entity.OrdenProceso;
+import pe.nasqa.values.model.entity.OrdenProcesoAvance;
+import pe.nasqa.values.model.entity.OrdenProcesoCargos;
+import pe.nasqa.values.model.entity.RegistroCoord;
+import pe.nasqa.values.model.entity.ReporteBBVAentr;
+import pe.nasqa.values.model.entity.ReporteBBVApend;
+import pe.nasqa.values.model.entity.ReporteBBVAworkf;
+import pe.nasqa.values.model.entity.ReporteBCPdetalleGen;
+import pe.nasqa.values.model.entity.ReporteBCPtc;
+import pe.nasqa.values.model.entity.ReporteEnvioProv;
+import pe.nasqa.values.model.entity.ReporteGNB;
+import pe.nasqa.values.model.entity.ReporteGNBtoken;
+import pe.nasqa.values.model.entity.ReporteGNBvales;
+import pe.nasqa.values.model.entity.ReporteHerbalife;
+import pe.nasqa.values.model.entity.ReporteOrbinGestion;
+import pe.nasqa.values.model.entity.ReporteRevistas;
+import pe.nasqa.values.model.entity.Valorado;
+
+@Repository
+public class DistribucionDaoImp implements DistribucionDao{
+	
+	@Autowired
+	private SessionFactory session;
+	
+	
+	public List<Distribucion> findDistOrdPro(String ordPro, String codCli) {
+		// TODO Auto-generated method stub
+		Criteria criteria = session.getCurrentSession().createCriteria(Distribucion.class);
+		if(codCli==null){
+			criteria.add(Restrictions.eq("ordPro", Integer.parseInt(ordPro)));
+		}else{
+			criteria.add(
+					Restrictions.and(
+							Restrictions.eq("codCli", codCli),
+							Restrictions.eq("ordPro", Integer.parseInt(ordPro))
+							)
+					);
+		}
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		return criteria.list();
+	}
+	
+	
+	public void updateDistribucion(Distribucion distrib) {
+		session.getCurrentSession().update(distrib);
+	}
+	
+	public void saveDistribucion(DistribucionVisita entity) {
+		session.getCurrentSession().persist(entity);
+	}
+	
+	public boolean updateVisita(String id_visita, String descargado) {
+		// TODO Auto-generated method stub
+		int rs = 0;
+		rs=session.getCurrentSession().
+		createSQLQuery("UPDATE distribucion_visita SET descargado=:descargado WHERE id=:id_visita").
+		setParameter("id_visita", Integer.parseInt(id_visita)).
+		setParameter("descargado", descargado)
+		.executeUpdate();
+		return rs>0;
+	}
+
+	
+	public List<Distribucion> findDistCodName(String codBar, String nroRef,
+			String docIde, String nomDes, String codCli) {
+		// TODO Auto-generated method stub
+		Criteria criteria = session.getCurrentSession().createCriteria(Distribucion.class);
+		List<Distribucion> result=new ArrayList<Distribucion>();
+		if(codBar.length()>0){
+			if(codCli==null){
+				criteria.add(Restrictions.eq("codBar", codBar));
+			}else{
+				criteria.add(
+						Restrictions.and(
+								Restrictions.eq("codCli", codCli),
+								Restrictions.eq("codBar", codBar)
+								)
+						);
+			}
+			//criteria.setFetchMode("visitas", FetchMode.JOIN);
+			criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			result = criteria.list();
+		}else if(nroRef.length()>0){
+			if(codCli==null){
+				criteria.add(
+						Restrictions.or(
+								Restrictions.eq("valNroIde", nroRef), 
+								Restrictions.eq("valOtrId1", nroRef), 
+								Restrictions.eq("valOtrId2", nroRef), 
+								Restrictions.eq("valOtrId3", nroRef)
+								)
+						);
+			}else{
+				criteria.add(
+						Restrictions.and(
+								Restrictions.eq("codCli", codCli),
+								Restrictions.or(
+										Restrictions.eq("valNroIde", nroRef), 
+										Restrictions.eq("valOtrId1", nroRef), 
+										Restrictions.eq("valOtrId2", nroRef), 
+										Restrictions.eq("valOtrId3", nroRef)
+										)
+								)
+						);
+			}
+			criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			result = criteria.list();
+		}else if(docIde.length()>0){
+			if(codCli==null){
+				criteria.add(
+						Restrictions.or(
+								Restrictions.eq("titNumDoc", docIde),
+								Restrictions.eq("md1NumDoc", docIde),
+								Restrictions.eq("md2NumDoc", docIde),
+								Restrictions.eq("valOtrId3", docIde)
+								)
+						);
+			}else{
+				criteria.add(
+						Restrictions.and(
+								Restrictions.eq("codCli", codCli),
+								Restrictions.or(
+										Restrictions.eq("titNumDoc", docIde),
+										Restrictions.eq("md1NumDoc", docIde),
+										Restrictions.eq("md2NumDoc", docIde),
+										Restrictions.eq("valOtrId3", docIde)
+										)
+								)
+						);
+			}
+			criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			result = criteria.list();
+		}
+		
+		if(nomDes.length()>2 && result.size() == 0){
+			if(codCli==null){
+				criteria.add(
+						Restrictions.or(
+							Restrictions.like("titNomApe", nomDes.toUpperCase(), MatchMode.ANYWHERE),
+							Restrictions.like("desNomApe", nomDes.toUpperCase(), MatchMode.ANYWHERE),
+							Restrictions.like("md1NomApe", nomDes.toUpperCase(), MatchMode.ANYWHERE),
+							Restrictions.like("md2NomApe", nomDes.toUpperCase(), MatchMode.ANYWHERE)
+							)
+						);
+			}else{
+				criteria.add(
+						Restrictions.and(
+								Restrictions.eq("codCli", codCli),
+								Restrictions.or(
+										Restrictions.like("titNomApe", nomDes.toUpperCase(), MatchMode.ANYWHERE),
+										Restrictions.like("desNomApe", nomDes.toUpperCase(), MatchMode.ANYWHERE),
+										Restrictions.like("md1NomApe", nomDes.toUpperCase(), MatchMode.ANYWHERE),
+										Restrictions.like("md2NomApe", nomDes.toUpperCase(), MatchMode.ANYWHERE),
+										Restrictions.like("dirLabEmp", nomDes.toUpperCase(), MatchMode.ANYWHERE)
+										)
+								)
+						);
+			}
+			
+			criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			//criteria.setFetchMode("visitas", FetchMode.JOIN);
+			criteria.setMaxResults(DVConstante.MAX_RESULT_FIND_DISTRIBUCION);
+			criteria.addOrder(Order.asc("fecPro"));
+			result = criteria.list();
+		}
+		
+		return result;
+	}
+
+	
+	public Distribucion getById(int id) {
+		// TODO Auto-generated method stub
+		return (Distribucion)session.getCurrentSession().get(Distribucion.class,id);
+	}
+
+	
+	public Distribucion getByCodBar(String codBar, String codCli) {
+		// TODO Auto-generated method stub
+		Criteria criteria = session.getCurrentSession().createCriteria(Distribucion.class);
+		//criteria.setFetchMode("visitas", FetchMode.JOIN);
+		if(codCli==null){
+			criteria.add(Restrictions.eq("codBar", codBar));
+		}else{
+			criteria.add(
+					Restrictions.and(
+							Restrictions.eq("codCli", codCli),
+							Restrictions.eq("codBar", codBar)
+							)
+					);
+		}
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		return (Distribucion)criteria.uniqueResult();
+	}
+	
+	/*Detalles*/
+	
+	
+	public List<DistribucionVisita> findVisitas(String codBar) {
+		// TODO Auto-generated method stub
+		if(codBar!=null){
+			Criteria criteria = session.getCurrentSession().createCriteria(DistribucionVisita.class);
+			criteria.add(Restrictions.eq("codBar", codBar));
+			//criteria.addOrder(Order.asc("idImport"));
+			criteria.addOrder(Order.desc("fecHoj"));
+			return criteria.list();
+		}else {
+			return null;
+		}
+	}
+
+	
+	public List<DistribucionCoord> findCoordinaciones(String codBar) {
+		// TODO Auto-generated method stub
+		if(codBar!=null){
+			Criteria criteria = session.getCurrentSession().createCriteria(DistribucionCoord.class);
+			criteria.add(Restrictions.eq("codBar", codBar));
+			criteria.addOrder(Order.desc("fecCoo"));
+			return criteria.list();
+		}else{
+			return null;
+		}
+	}
+
+	
+	public List<DistribucionCoordTelf> findCoordinacionesTelef(String codBar) {
+		// TODO Auto-generated method stub
+		if(codBar!=null){
+			Criteria criteria = session.getCurrentSession().createCriteria(DistribucionCoordTelf.class);
+			criteria.add(Restrictions.eq("codBar", codBar));
+			criteria.addOrder(Order.asc("idImport"));
+			return criteria.list();
+		}else{
+			return null;
+		}
+	}
+
+	
+	public List<DistribucionPaquete> findPaquetes(String codBar) {
+		// TODO Auto-generated method stub
+		if(codBar!=null){
+			Criteria criteria = session.getCurrentSession().createCriteria(DistribucionPaquete.class);
+			criteria.add(Restrictions.eq("codBar", codBar));
+			criteria.addOrder(Order.asc("idImport"));
+			return criteria.list();
+		}else{
+			return null;
+		}
+	}
+
+	
+	public List<DistribucionPaquete> findPaqueteCodName(String nroDoc, String nomDes, String codCli) {
+		// TODO Auto-generated method stub
+		List<DistribucionPaquete> result=new ArrayList<DistribucionPaquete>();
+		if(nroDoc.length()>0){
+			String jpql=" SELECT d FROM DistribucionPaquete d, Distribucion c  WHERE d.codBar=c.codBar "+
+						" AND ( d.nroDoc = :nroDoc OR d.nroIde = :nroDoc OR d.codOtr = :nroDoc OR d.tlfRef = :nroDoc ) ";
+			
+			if(codCli!=null)jpql+= " AND c.codCli = :codCli ";
+			
+			Query query=session.getCurrentSession().createQuery(jpql);
+			query.setParameter("nroDoc", nroDoc);
+			if(codCli!=null)query.setParameter("codCli", codCli);
+			
+			result = query.list();
+		}
+		//UPPER
+		if(nomDes.length()>2 && result.size() == 0){
+			
+			String jpql=" SELECT d FROM DistribucionPaquete d, Distribucion c  WHERE d.codBar=c.codBar "+
+						" AND ( UPPER(d.nomDes) LIKE :nomDes OR UPPER(d.nomOtr) LIKE :nomDes ) ";
+			
+			if(codCli!=null)jpql+= " AND c.codCli = :codCli ";
+			
+			Query query=session.getCurrentSession().createQuery(jpql);
+			query.setParameter("nomDes", "%"+nomDes.toUpperCase()+"%");
+			if(codCli!=null)query.setParameter("codCli", codCli);
+			
+			query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			query.setMaxResults(DVConstante.MAX_RESULT_FIND_DISTRIBUCION);
+			result = query.list();
+		}
+		
+		return result;
+	}
+
+	
+	public List<DistribucionCoord> findDirEntrega(String codBar, Date fecCoo) {
+		// TODO Auto-generated method stub
+		Criteria criteria = session.getCurrentSession().createCriteria(DistribucionCoord.class);
+		//criteria.setFetchMode("visitas", FetchMode.JOIN);
+		criteria.add(
+				Restrictions.and(
+						Restrictions.eq("fecCoo", fecCoo),
+						Restrictions.eq("codBar", codBar)
+						)
+				);
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		//return (DistribucionCoord)criteria.uniqueResult();
+		return criteria.list();
+	}
+	/**MODIFICAR LA FECHA DE COORD SI HAY 2 COD DE BAR CON LA MISMA FECHA DE COOR DE VA A CAER 
+	 * METHOD: findDirEntrega
+	**/
+	
+	//REPORTES
+	
+	
+	public OrdenProceso getOPInfo(String ordPro, String codCli) {
+		// TODO Auto-generated method stub
+		String sql = " SELECT ord_pro as op, fec_pro as fecha, nom_cli as cliente, des_pro_val as producto, count(cod_bar) as total " +
+					 " FROM distribucion " +
+					 " WHERE ord_pro = :op " +(codCli!=null?"AND cod_cli=:codCli":"")+
+					 " GROUP BY op,fecha,cliente,producto ";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(OrdenProceso.class);
+		query.setMaxResults(1);
+		query.setInteger("op", Integer.parseInt(ordPro));
+		if(codCli!=null){
+			query.setString("codCli", (codCli));
+		}
+		return (OrdenProceso)query.uniqueResult();
+	}
+	
+	/*
+	 public List<OrdenProcesoAvance> getOPAvance(String ordPro, String codCli) {
+		// TODO Auto-generated method stub
+		String sql = " SELECT ind_sit as codigo, upper(des_sit) as gestion, count(cod_bar) as cantidad "+
+					 " FROM distribucion "+
+					 " WHERE ord_pro=:op "+ (codCli!=null?"AND cod_cli=:codCli":"")+
+					 " GROUP BY ind_sit, upper(des_sit) " +
+					 " ORDER BY 1 ";
+		System.out.println("query:"+sql);
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(OrdenProcesoAvance.class);
+		System.out.println(query.getQueryString());
+		if(codCli!=null){
+			query.setString("codCli", (codCli));
+		}
+		return query.setInteger("op", Integer.parseInt(ordPro)).list();
+	}
+	*/
+	
+	 public List<OrdenProcesoAvance> getOPAvance(String ordPro, String codCli) {
+			// TODO Auto-generated method stub
+			String sql = " SELECT d.ind_sit as codigo, (SELECT upper(des_sit) FROM distribucion WHERE ord_pro=:op and ind_sit = d.ind_sit LIMIT 1) as gestion, count(d.cod_bar) as cantidad "+
+						 " FROM distribucion d "+
+						 " WHERE d.ord_pro=:op "+ (codCli!=null?"AND d.cod_cli=:codCli":"")+
+						 " GROUP BY d.ind_sit " +
+						 " ORDER BY 1 ";
+		//	System.out.println("query:"+sql);
+			Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(OrdenProcesoAvance.class);
+		//	System.out.println(query.getQueryString());
+			if(codCli!=null){
+				query.setString("codCli", (codCli));
+			}
+			return query.setInteger("op", Integer.parseInt(ordPro)).list();
+		}
+	
+	 /*
+	public List<OrdenProcesoCargos> getOPCargos(String ordPro, String codCli) {
+		// TODO Auto-generated method stub
+		String sql = " SELECT ind_sit as codigo, upper(des_sit) as gestion, img_car_est as cargos, count(cod_bar) as cantidad " +
+					 " FROM distribucion " +
+					 " WHERE ord_pro=:op " + (codCli!=null?"AND cod_cli=:codCli":"")+
+					 " GROUP BY ind_sit, upper(des_sit), img_car_est " +
+					 " ORDER BY 1,3";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(OrdenProcesoCargos.class);
+		System.out.println("getOPCargos:"+query.getQueryString());
+		if(codCli!=null){
+			query.setString("codCli", (codCli));
+		}
+		return query.setInteger("op", Integer.parseInt(ordPro)).list();
+	}
+	*/
+	 public List<OrdenProcesoCargos> getOPCargos(String ordPro, String codCli) {
+			// TODO Auto-generated method stub
+			String sql = " SELECT d.ind_sit as codigo, (SELECT upper(des_sit) FROM distribucion WHERE ord_pro=:op and ind_sit = d.ind_sit LIMIT 1) as gestion, d.img_car_est as cargos, count(d.cod_bar) as cantidad " +
+						 " FROM distribucion d " +
+						 " WHERE d.ord_pro=:op " + (codCli!=null?"AND d.cod_cli=:codCli":"")+
+						 " GROUP BY d.ind_sit, d.img_car_est " +
+						 " ORDER BY 1,3";
+			Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(OrdenProcesoCargos.class);
+			//System.out.println("getOPCargos:"+query.getQueryString());
+			if(codCli!=null){
+				query.setString("codCli", (codCli));
+			}
+			return query.setInteger("op", Integer.parseInt(ordPro)).list();
+		}
+	
+	public List<OrdenProceso> getOPsInfo(List<String> ordPro, String codCli) {
+		// TODO Auto-generated method stub
+		String inOps = "";
+		for (int i = 0; i < ordPro.size(); i++) {
+			inOps+= (inOps.length()>0?",":"")+ordPro.get(i);
+			
+		}
+		
+		String sql = " SELECT ord_pro as op, fec_pro as fecha, nom_cli as cliente, des_pro_val as producto, count(cod_bar) as total " +
+					 " FROM distribucion " +
+					 " WHERE ord_pro IN ("+inOps+") " + (codCli!=null?"AND cod_cli=:codCli":"") +
+					 " GROUP BY op,fecha,cliente,producto " +
+					 " ORDER BY fec_pro DESC";
+		
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(OrdenProceso.class);
+		if(codCli!=null){
+			query.setString("codCli", (codCli));
+		}
+		return query.list();
+	}
+
+	
+	public List<OrdenProceso> getOPsInfo(Date fromDate, Date toDate, String codCli) {
+		// TODO Auto-generated method stub
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		List<OrdenProceso> listaOrden = new ArrayList<OrdenProceso>();
+		String sql = " SELECT distinct ord_pro as op, fec_pro as fecha, nom_cli as cliente, des_pro_val as producto, count(cod_bar) as total " +
+					 " FROM distribucion " +
+					 " WHERE :fromDate <= fec_pro AND fec_pro <= :toDate " +(codCli!=null?"AND cod_cli=:codCli":"")+
+					 " GROUP BY op,fecha,cliente,producto " +
+					 " ORDER BY fec_pro DESC";
+		
+		//Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(OrdenProceso.class);
+		Query query = session.getCurrentSession().createSQLQuery(sql);		
+		query.setDate("fromDate", fromDate);
+		query.setDate("toDate", toDate);
+		if(codCli!=null){
+			query.setString("codCli", (codCli));
+		}
+		List<Object> lista = query.list();
+		OrdenProceso bean = new OrdenProceso();
+		 Iterator itr = lista.iterator();
+         while(itr.hasNext()){
+           Object[] obj = (Object[]) itr.next();
+			bean = new OrdenProceso();
+			bean.setOp(obj[0].toString());
+			try{
+				bean.setFecha(formatter.parse(obj[1].toString()));
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			bean.setCliente(obj[2].toString());
+			bean.setProducto(obj[3].toString());
+			bean.setTotal(Integer.parseInt(obj[4].toString()));
+			listaOrden.add(bean);
+		}
+		return listaOrden;
+	}
+	
+	public String[] findOpsInfoUnicos(Date fromDate, Date toDate, String codCli) {
+		// TODO Auto-generated method stub
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		
+		String sql = " SELECT distinct ord_pro as op, fec_pro as fecha, nom_cli as cliente, cod_pro_val as codigo_producto, count(cod_bar) as total " +
+					 " FROM distribucion " +
+					 " WHERE :fromDate <= fec_pro AND fec_pro <= :toDate " +(codCli!=null?"AND cod_cli=:codCli":"")+
+					 " and cod_pro_val = '02'" +//02 = COD_PRO_VAL SOLO TARJETAS
+					 " GROUP BY op,fecha,cliente,codigo_producto " +
+					 " ORDER BY fec_pro DESC";
+		
+		//Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(OrdenProceso.class);
+		Query query = session.getCurrentSession().createSQLQuery(sql);		
+		query.setDate("fromDate", fromDate);
+		query.setDate("toDate", toDate);
+		if(codCli!=null){
+			query.setString("codCli", (codCli));
+		}
+		List<Object> lista = query.list();		
+		String[] listaOrden = new String [lista.size()];
+		Iterator itr = lista.iterator();
+		int i = 0;
+	    while(itr.hasNext()){
+           Object[] obj = (Object[]) itr.next();
+           System.out.println(obj[0].toString());
+           listaOrden[i] = obj[0].toString();		
+           i++;
+		}
+		return listaOrden;
+	}
+	
+	
+	public List<Estados> getEstadosToComboBox(String tipo, String idPadre, String codigo_cliente) {
+		// TODO Auto-generated method stub
+		String sql = " SELECT *"+
+					 " FROM estados " +
+				     " WHERE tipo=:tipo "+ 
+					  (idPadre!=null ? " and id_padre =:idPadre":"")+
+					  (codigo_cliente!=null ? " AND cod_cliente = :cod_cliente" : "")+
+					 " ORDER BY des_estado";
+		//System.out.println(sql);
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(Estados.class);
+		if(idPadre!=null){
+			query.setInteger("idPadre", Integer.parseInt(idPadre));
+		}
+		if(codigo_cliente!=null){
+		query.setString("cod_cliente", codigo_cliente);
+		}
+		return query.setInteger("tipo", Integer.parseInt(tipo)).list();
+	}
+	
+	public List<Estados> getEstadosMotivosToComboBox(String tipo, String idPadre, String codigo_cliente) {
+		// TODO Auto-generated method stub
+		String sql = "";
+			if(idPadre!=null){	
+				sql = " SELECT * "+
+					 " FROM estados " +
+				     " WHERE tipo=:tipo "+ 
+					 " AND id_padre =:idPadre"+
+					 " AND cod_cliente is null"+
+					 " ORDER BY des_estado";
+			}else{
+					sql = " SELECT * "+
+					 " FROM estados " +
+				     " WHERE tipo=:tipo "+ 
+					 " AND id_padre is null"+
+					 " AND cod_cliente is null"+
+					 " ORDER BY des_estado";
+				
+			}
+		//System.out.println(sql);
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(Estados.class);
+		if(idPadre!=null ){
+			query.setInteger("idPadre", Integer.parseInt(idPadre));
+		}
+		
+		return query.setInteger("tipo", Integer.parseInt(tipo)).list();
+		
+	}
+	
+	public Estados getEstadoByIdEstado(String id_estado) {
+		// TODO Auto-generated method stub
+		String sql = " SELECT * "+
+					 " FROM estados " +
+				     " WHERE id_estado=:id_estado ";
+		System.out.println(sql+"->id_estado:"+id_estado);
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(Estados.class);
+		query.setMaxResults(1);		
+		return (Estados)query.setInteger("id_estado", Integer.parseInt(id_estado)).uniqueResult();
+	}
+	
+	public CordinacionPDF getCordinacionPDFUno(String id_cordinacion) {
+		// TODO Auto-generated method stub
+		String sql = " SELECT dc.id as id_coordinacion, "+
+					" d.nom_cli as nombre_cliente, d.des_pro_val as nombre_producto, d.fec_pro as fecha_proceso, "+
+					" d.cod_bar as codigo_barras, d.val_nro_ide as numero_tarjeta, D.tit_nom_ape as nombre_persona,"+
+					" dc.tlf_coo as telefono_persona,dc.dir_coo as direccion_coordinada, dc.fec_coo as fecha_coordinada,"+
+					" dc.hor_coo as hora_coordinada, dc.obs_coo as observacion_coordinada, dc.ref_coo as referencia_coordinada,"
+					+ "0 as codigo_mensajero "+
+					" FROM distribucion_coord dc "+
+					" LEFT JOIN distribucion d on d.cod_bar = dc.cod_bar "+
+					" WHERE dc.ID =:id_cordinacion ";
+		System.out.println(sql+"->id_cordinacion:"+id_cordinacion);
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(CordinacionPDF.class);
+		query.setMaxResults(1);		
+		return (CordinacionPDF)query.setInteger("id_cordinacion", Integer.parseInt(id_cordinacion)).uniqueResult();
+	}
+	
+	public List<CordinacionPDF> getCordinacionPDFVarios(Date fec_coo, String cod_msj) {
+		// TODO Auto-generated method stub
+		String sql =  " SELECT dc.id as id_coordinacion, "+
+					  "	d.nom_cli as nombre_cliente, d.des_pro_val as nombre_producto, d.fec_pro as fecha_proceso, " +
+					  "	d.cod_bar as codigo_barras, d.val_nro_ide as numero_tarjeta, D.tit_nom_ape as nombre_persona, " +
+					  "	dc.tlf_coo as telefono_persona,dc.dir_coo as direccion_coordinada, dc.fec_coo as fecha_coordinada, " +
+					  "	dc.hor_coo as hora_coordinada, dc.obs_coo as observacion_coordinada, dc.ref_coo as referencia_coordinada, " +
+					  "	dv.cod_msj as codigo_mensajero " +
+					  "	FROM distribucion_coord dc " +
+					  "	LEFT JOIN distribucion d on d.cod_bar = dc.cod_bar " +
+					  "	LEFT JOIN distribucion_visita dv on dv.nro_hoj = d.nro_hoj and dv.fec_hoj = d.fec_hoj and dc.cod_bar = dv.cod_bar "+
+					  "	WHERE dc.fec_coo = :fec_coo and dv.cod_msj = :cod_msj";
+		//System.out.println(sql);
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(CordinacionPDF.class);		
+		query.setDate("fec_coo", fec_coo);		
+		query.setInteger("cod_msj", Integer.parseInt(cod_msj));
+		return query.list();
+	}
+	//Visitas agregadas por la interface de carga gestion
+	public List<ExportVisita> getVisitasFromUI(Date fec_inicio, Date fec_fin, String reDescarga) {
+		// TODO Auto-generated method stub
+		String sql =  " SELECT dv.id as id_visita, dv.fec_hoj as fecha_hoja, dv.cod_msj as codigo_mensajero, dv.cod_bar as codigo_barras, dv.cod_mot as codigo_motivo, dv.tip_dir as tipo_direccion, dv.hor_vis as hora_visita,"
+						+ "( CASE "+
+						 "WHEN dv.fec_hoj = d.fec_hoj AND d.des_sit ='ENTREGADO' then d.per_rec END) as persona_recibida,  "+
+						 "( CASE "+ 
+						 "WHEN dv.fec_hoj = d.fec_hoj AND d.des_sit ='ENTREGADO' then  d.ind_vin END) as codigo_vinculo, "+
+						 " fec_cre as fec_creacion "+//21.06.2016
+					"	FROM distribucion_visita dv, distribucion d "+
+					"	WHERE d.cod_bar = dv.cod_bar "+					
+					"	AND dv.from_ui = '1' "+
+					"	AND to_date(to_char(dv.fec_cre, 'DD/MM/YYYY'), 'DD/MM/YYYY')  "+
+					"   BETWEEN :fec_inicio AND :fec_fin ";
+					//(reDescarga=="NO" ? " and descargado ='1'":""); 
+		
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ExportVisita.class);		
+		query.setDate("fec_inicio", fec_inicio);		
+		query.setDate("fec_fin", fec_fin);	
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+		
+	public List<ReporteGNB> getReporteGNB(String fec_inicio, String fec_fin) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from gnb_reporte where  to_date(fecha_ingreso, 'DD/MM/YYYY')  BETWEEN to_date(:fec_inicio, 'DD/MM/YYYY') AND to_date(:fec_fin, 'DD/MM/YYYY') "
+					+ "	ORDER BY fecha_ingreso ASC, cargo ASC";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ReporteGNB.class);		
+		query.setString("fec_inicio", fec_inicio);		
+		query.setString("fec_fin", fec_fin);	
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	public List<ReporteBCPtc> getReporteBCPtc(String fec_inicio, String fec_fin) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from Frepbcptar(to_date(:fec_inicio,'DD/MM/YYYY'),to_date(:fec_fin,'DD/MM/YYYY'))";
+		System.out.println("Antes de SQL");
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ReporteBCPtc.class);		
+		query.setString("fec_inicio", fec_inicio);		
+		query.setString("fec_fin", fec_fin);	
+		//--query.setTimeout(180000);
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	public List<ReporteHerbalife> getReporteHerbalife(String fec_inicio, String fec_fin) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from Frepherbalife(to_date(:fec_inicio,'DD/MM/YYYY'),to_date(:fec_fin,'DD/MM/YYYY'))";
+		
+		
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ReporteHerbalife.class);		
+		query.setString("fec_inicio", fec_inicio);		
+		query.setString("fec_fin", fec_fin);	
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	public List<ReporteBBVApend> getReporteBBVApend(String fec_inicio, String fec_fin) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from frepbbvapend(to_date(:fec_inicio,'DD/MM/YYYY'),to_date(:fec_fin,'DD/MM/YYYY'))";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ReporteBBVApend.class);		
+		query.setString("fec_inicio", fec_inicio);		
+		query.setString("fec_fin", fec_fin);	
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	public List<ReporteBBVAworkf> getReporteBBVAworkf(String fec_inicio, String fec_fin) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from frepbbvaworkf(to_date(:fec_inicio,'DD/MM/YYYY'),to_date(:fec_fin,'DD/MM/YYYY'))";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ReporteBBVAworkf.class);		
+		query.setString("fec_inicio", fec_inicio);		
+		query.setString("fec_fin", fec_fin);	
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	public List<ReporteBBVAentr> getReporteBBVAentr(String fec_inicio, String fec_fin) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from frepbbvaentr(to_date(:fec_inicio,'DD/MM/YYYY'),to_date(:fec_fin,'DD/MM/YYYY'))";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ReporteBBVAentr.class);		
+		query.setString("fec_inicio", fec_inicio);		
+		query.setString("fec_fin", fec_fin);	
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	public List<ReporteGNBvales> getReporteGNBvales(String fec_inicio, String fec_fin) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from frepgmbvales(to_date(:fec_inicio,'DD/MM/YYYY'),to_date(:fec_fin,'DD/MM/YYYY'))";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ReporteGNBvales.class);		
+		query.setString("fec_inicio", fec_inicio);		
+		query.setString("fec_fin", fec_fin);	
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	
+	public List<ReporteGNBtoken> getReporteGNBtoken(String fec_inicio, String fec_fin) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from frepgnbtoken(to_date(:fec_inicio,'DD/MM/YYYY'),to_date(:fec_fin,'DD/MM/YYYY'))";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ReporteGNBtoken.class);		
+		query.setString("fec_inicio", fec_inicio);		
+		query.setString("fec_fin", fec_fin);	
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	
+	public List<ReporteOrbinGestion> getReporteOrbinGestion(String fec_inicio, String fec_fin,int sw) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from freporbisges(to_date(:fec_inicio,'DD/MM/YYYY'),to_date(:fec_fin,'DD/MM/YYYY'),:sw)";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ReporteOrbinGestion.class);		
+		query.setString("fec_inicio", fec_inicio);		
+		query.setString("fec_fin", fec_fin);
+		query.setInteger("sw", sw);
+		
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	public List<ReporteBCPdetalleGen> getReporteBCPdetalleGen(String fec_inicio, String fec_fin) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from frepbcpdetallegen(to_date(:fec_inicio,'DD/MM/YYYY'),to_date(:fec_fin,'DD/MM/YYYY'))";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ReporteBCPdetalleGen.class);		
+		query.setString("fec_inicio", fec_inicio);		
+		query.setString("fec_fin", fec_fin);	
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	public List<ReporteRevistas> getReporteRevistas(String fec_inicio, String fec_fin) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from freprevistas(to_date(:fec_inicio,'DD/MM/YYYY'),to_date(:fec_fin,'DD/MM/YYYY'))";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ReporteRevistas.class);		
+		query.setString("fec_inicio", fec_inicio);		
+		query.setString("fec_fin", fec_fin);	
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	public List<ReporteEnvioProv> getReporteEnvioProv(String fec_inicio, String fec_fin) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from frepenvioprov(to_date(:fec_inicio,'DD/MM/YYYY'),to_date(:fec_fin,'DD/MM/YYYY'))";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ReporteEnvioProv.class);		
+		query.setString("fec_inicio", fec_inicio);		
+		query.setString("fec_fin", fec_fin);	
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	
+	public List<ExportBaseCourier> getBaseCourier(String ordenProceso, String cod_msj) {
+		// TODO Auto-generated method stub
+		String sql = 	" select d.id as id_distribucion, "+
+						" d.cod_bar as codigo_barra, d.nro_hoj as hoja_ruta, "+
+						" d.fec_hoj as fecha_hoja, d.tit_nom_ape as titular, "+
+						" concat(d.dir_dom_des,' - ',d.dir_dom_dep,' - ',d.dir_dom_pro,' - ', d.dir_dom_dis) as direccion_basica, "+
+						" concat(d.dir_lab_des,' - ',d.dir_lab_dep,' - ',d.dir_lab_pro,' - ', d.dir_lab_dis) as direccion_alterna_1, "+
+						" concat(d.dir_opc_des,' - ',d.dir_opc_dep,' - ',d.dir_opc_pro,' - ', d.dir_opc_dis) as direccion_alterna_2, "+
+						" (select dir_coo from distribucion_coord where cod_bar = d.cod_bar order by fec_coo desc LIMIT 1) as direccion_alterna_3, "+
+						" dv.id as id_visita, dv.cod_msj as codigo_mensajero "+
+						" from distribucion d"+
+						" LEFT JOIN distribucion_visita dv on dv.nro_hoj = d.nro_hoj and dv.fec_hoj = d.fec_hoj and dv.cod_bar = d.cod_bar "+
+						" WHERE ord_pro = :op AND dv.cod_msj = :codMsj"; 
+		
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(ExportBaseCourier.class);		
+		query.setInteger("op", Integer.parseInt(ordenProceso));	
+		query.setInteger("codMsj", Integer.parseInt(cod_msj));	
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	public List<Valorado> getProductoXCliente(String cod_cliente) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from valorado where cod_cliente=:cod_cliente and activo='ON'";
+					//+ "	ORDER BY fecha_ingreso ASC, cargo ASC";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(Valorado.class);
+		query.setString("cod_cliente", cod_cliente);		
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	public Distribucion getDistribucionXCodBar(String cod_bar) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from distribucion where cod_bar=:cod_bar";
+					//+ "	ORDER BY fecha_ingreso ASC, cargo ASC";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(Distribucion.class);
+		query.setString("cod_bar", cod_bar);		
+		System.out.println(query.getQueryString());
+		return (Distribucion)query.uniqueResult();
+	}
+	
+	public List<Object> getDatosXCodigo(String codigo) {
+		// TODO Auto-generated method stub
+		String sql =  " select h.nro_hoja, h.fecha, m.cod_mensajero, m.nombres, m.apellido_pat, m.apellido_mat "
+				+ " from hoja_ruta h, mensajero m "
+				+ " where h.cod_bar_ruta=:h.cod_bar_ruta"
+				+ " and h.id_mensajero=m.id_mensajero";
+					//+ "	ORDER BY fecha_ingreso ASC, cargo ASC";
+		Query query = session.getCurrentSession().createSQLQuery(sql);
+		query.setString("h.cod_bar_ruta", codigo);		
+		return query.list();
+	}
+	
+	public Integer idImportMax() {
+		// TODO Auto-generated method stub
+		String sql;
+		 sql = " select max(id_import) from distribucion_visita";
+		//System.out.println(sql);
+		Query query = session.getCurrentSession().createSQLQuery(sql);
+		
+		Integer result = (Integer)query.uniqueResult();
+		if(result==null){
+			result=0;
+		}
+		return result;
+	}
+	
+	public List<Estados> getEstadosMotivos(String tipo, String idPadre, String codigo_cliente) {
+		// TODO Auto-generated method stub
+		String sql = "";
+
+					sql = " SELECT * "+
+					 " FROM estados " +
+				     " WHERE tipo=:tipo "+ 
+					 " AND (id_padre =1 OR id_padre=2 OR id_padre=3)"+
+					 " AND cod_cliente is null"+
+					 " ORDER BY des_estado";
+				
+		//System.out.println(sql);
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(Estados.class);
+		
+		return query.setInteger("tipo", Integer.parseInt(tipo)).list();
+		
+	}
+	
+	public DistribucionVisita getDistribucionVisitaXCodBar(String cod_bar) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from distribucion_visita where cod_bar=:cod_bar"+
+					" order by fec_hoj DESC limit 1";
+					//+ "	ORDER BY fecha_ingreso ASC, cargo ASC";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(DistribucionVisita.class);
+		query.setString("cod_bar", cod_bar);		
+		System.out.println(query.getQueryString());
+		return (DistribucionVisita)query.uniqueResult();
+	}
+	
+	public void delete(DistribucionVisita entity) {
+		// TODO Auto-generated method stub
+		session.getCurrentSession().delete(entity);
+	}
+	
+	public void update(DistribucionVisita entity) {
+		// TODO Auto-generated method stub
+		session.getCurrentSession().update(entity);
+	}
+	
+	public DistribucionVisita getDistribucionVisitaXID(Integer id) {
+		// TODO Auto-generated method stub
+		String sql =  " select * from distribucion_visita where id=:id";
+					//+ "	ORDER BY fecha_ingreso ASC, cargo ASC";
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(DistribucionVisita.class);
+		query.setInteger("id", id);		
+		System.out.println(query.getQueryString());
+		return (DistribucionVisita)query.uniqueResult();
+	}
+	
+	public List<Cliente> getClientes() {
+		// TODO Auto-generated method stub
+		String sql = "";
+
+					sql = " select * from cliente c where c.cod_cliente in (select cod_cliente from valorado where activo='ON')";
+
+				
+		//System.out.println(sql);
+		Query query = session.getCurrentSession().createSQLQuery(sql).addEntity(Cliente.class);
+		
+		return query.list();
+		
+	}
+	
+	public List<Object> getGestiones(Date fecha) {
+		// TODO Auto-generated method stub
+		String sql =  " select d.cod_bar, d.ind_sit, v.fec_hoj,d.cod_cli,e.estado_taylor "+
+				    "from distribucion_visita v,cliente c,distribucion d, estados_gestion e "+
+					"where v.fec_hoj=:v.fec_hoj "+
+				    "and v.cod_mot=e.estado_values "+
+					"and d.cod_bar=v.cod_bar "+
+					"and d.cod_cli = c.cod_cliente "+
+					"and c.datafrom =:c.datafrom";
+		Query query = session.getCurrentSession().createSQLQuery(sql);			
+		query.setDate("v.fec_hoj", fecha);
+		query.setInteger("c.datafrom", 2);
+		System.out.println(query.getQueryString());
+		return query.list();
+	}
+	
+	public List<Object> getCodbarCoordinacion(String codBar){
+		// TODO Auto-generated method stub
+				String sql =  "select d.cod_bar "
+						+ " from distribucion d, distribucion_coord c "
+						+ " where d.cod_bar=:cod_barra"
+						+ " and d.cod_bar=c.cod_bar"
+						+ " and d.fec_hoj=c.fec_coo";
+				Query query = session.getCurrentSession().createSQLQuery(sql);
+				query.setString("cod_barra", codBar);		
+				System.out.println(query.getQueryString());
+				return query.list();
+	}
+	
+	public Integer getCodbarPqr(String codBar){
+		// TODO Auto-generated method stub
+				String sql =  "select c.datafrom "
+						+ " from distribucion d, cliente c "
+						+ " where d.cod_bar=:cod_barra"
+						+ " and d.cod_cli=c.cod_cliente";
+				Query query = session.getCurrentSession().createSQLQuery(sql);
+				query.setString("cod_barra", codBar);		
+				Integer result = (Integer)query.uniqueResult();
+				if(result==null){
+					result=0;
+				}
+				return result;
+	}
+}

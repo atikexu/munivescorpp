@@ -1,0 +1,20 @@
+﻿select * from perfil;
+--delete from perfil
+insert into perfil values(1,'Admin');
+insert into perfil values(2,'Jefe');
+insert into perfil values(3,'Coordinador');
+insert into perfil values(4,'CallCenter');
+insert into perfil values(5,'Operador');
+insert into perfil values(6,'Cliente');
+
+select * from usuario;
+insert into usuario(id,estado,password,username) values(1,'ACTIVE',md5('edwin'),'edwin');
+insert into usuario(id,estado,password,username) values(2,'ACTIVE',md5('walter'),'walter');
+
+select * from usuarioperfil;
+insert into usuarioperfil values(1,1);
+insert into usuarioperfil values(1,2);
+insert into usuarioperfil values(2,3);
+--delete from usuarioperfil where perfil_id=2
+
+select * from perfil inner join usuarioperfil on perfil.id=usuarioperfil.idperfil inner join usuario on usuario.id=usuarioperfil.idusuario;

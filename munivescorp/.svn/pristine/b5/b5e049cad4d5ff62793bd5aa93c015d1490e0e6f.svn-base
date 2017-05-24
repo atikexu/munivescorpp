@@ -1,0 +1,265 @@
+/* formularios y tablas */
+/*
+Amarillo: #ffc000
+Azul: #00a2ff
+*/
+
+.content-form-login {
+	margin-top: 42px; margin-bottom: 42px;
+}
+
+.form-login {
+	margin-top: 12px; margin-bottom: 12px;
+	border-top: 1px solid #d7d7d7;
+	text-align: center;
+}
+	.form-login div {
+		margin: 0 auto;
+		width: 100%;
+		max-width: 300px;
+		padding: 6px 22px;
+		overflow: hidden;
+		text-align: center;
+	}
+	.form-login div span{
+		font-size: 0.9em;
+		color: #ff6000;
+	}
+		.form-login label {
+			display: block;
+			width: 80px;
+			float: left;
+			padding-right: 10px;
+			text-align: right;
+			vertical-align: middle;
+			padding: 2px 5px;
+		}
+		.form-login input[type="text"], .form-login input[type="password"], .form-login input[type="email"], .form-login input[type="url"], .form-login input[type="tel"] {
+			display: table-cell;
+			width: 150px;
+			height: 20px;
+			border: 1px solid #85d3ff;
+			padding: 2px 5px;
+		}
+		.form-login input[type="text"]:focus, .form-login input[type="password"]:focus, .form-login input[type="email"]:focus, .form-login input[type="url"]:focus {
+			border: 1px solid #ffc000;
+		}
+		.form-login .remember-me{
+			margin-left: 110px;
+			margin-top: 3px;
+			width: 20px;
+			float: left;
+		}
+		.form-login .remember-me-label{
+			display: block;
+			width: 120px;
+			float: left;
+			padding-top:0;
+			text-align: left;
+		}
+		.form-login textarea {
+			width: 300px;
+			height: 150px;
+			border: 1px solid #85d3ff;
+		}
+		.form-login input[type="submit"] {
+			width: 180px;
+		}
+		
+/* genericos */
+.boton-default {
+			padding: 4px 12px;
+			background: #00a2ff;
+		    color: white;
+		    font-size: 1.2em;
+		    border: 0;
+		    text-decoration: none;
+		}
+		.boton-default:hover{
+		    background: #ffc000;
+		    cursor: pointer;
+		}
+.boton-link{
+	color: #00bae8;
+	text-decoration: none;
+}
+.boton-link:hover{
+	text-decoration: underline;
+}
+.field-color1{
+	color: #ffc000;
+}
+.field-color2{
+	color: #00a2ff;
+}
+		
+.content-form-generic {
+	display: block;
+	width: 50%;
+	float: left;
+	margin-top: 12px; margin-bottom: 12px;
+	text-align: center;
+}
+.content-form-generic h2{
+	color: #00a2ff;
+}
+.form-generic {
+	margin-top: 12px; margin-bottom: 12px;
+	text-align: left;
+}
+	.form-generic div {
+		margin: 0 auto;
+		width: 100%;
+		padding: 2px 2px;		
+		text-align: left;
+/* 		border: 1px red solid; */
+	}
+	.form-generic div span{
+		font-size: 0.9em;
+		color: #ff6000;
+	}
+		.form-generic label {
+			display: block;
+			width: 180px;
+			float: left;
+			padding-right: 6px;
+			text-align: right;
+			vertical-align: middle;
+			padding: 2px 5px;
+		}
+		.form-generic input[type="text"], .form-up input[type="password"], .form-up input[type="file"]{
+			height: 20px;
+			border: 1px solid #85d3ff;
+			padding: 2px 5px;
+		}
+		.form-generic input[type="text"]:focus, .form-up input[type="password"]:focus, .form-up input[type="file"]:focus{
+			border: 1px solid #ffc000;
+		}
+
+		.form-generic textarea {
+			width: 210px;
+			height: 80px;
+			padding: 2px 5px;
+			border: 1px solid #85d3ff;
+		}
+		.form-generic textarea:focus{
+			border: 1px solid #ffc000;
+		}
+		.form-generic select{
+			max-width: 150px;
+			border: 1px solid #85d3ff;
+			padding: 2px 5px;
+		}
+		.form-generic select:focus{
+			border: 1px solid #ffc000;
+		}
+
+.content-space-generic{
+	padding: 12px;
+}
+.content-frame-generic {
+	min-width: 50%;
+	float: left;
+	text-align: left;
+	margin: 12px 0;
+	width: 50%;
+}
+.content-frame-generic h2{
+	color: #ffc000;
+}
+	.content-frame-generic div{
+		width: 100%;
+		padding: 2px 0;
+		overflow: hidden;
+	}
+	.content-frame-generic .info {
+		display: block;
+		text-align: center;
+		vertical-align: middle;
+		padding: 1px 4px;
+		color: #ffc000;
+		font-style: italic;
+		font-size: .85em;
+	}
+	.content-frame-generic .label {
+		display: block;
+		width: 180px;
+		float: left;
+		padding-right: 6px;
+		text-align: right;
+		vertical-align: middle;
+		padding: 2px 5px;
+		color: #888;
+	}
+	.content-frame-generic .value{
+		display: block;
+		min-width: 100px;
+		min-height: 16px;
+		float: left;
+		border-radius: 0px 0px 0px 8px;
+		-moz-border-radius: 0px 0px 0px 8px;
+		-webkit-border-radius: 0px 0px 0px 8px;
+		border-bottom: 1px solid #ffc000;
+		border-left: 1px solid #ffc000;
+		padding: 2px 5px 2px 8px;
+		color: #333;
+	}
+
+
+@media screen and (max-width: 950px){
+	.info-generic-img{
+    	width: 40px;
+    	position: absolute;
+    	left: 10px; top: 10px;
+    	z-index: 10;
+    }	
+}
+@media screen and (max-width: 800px){
+    .content-form-generic{
+    	float: none;
+    	width: 100%;
+    }
+    .content-frame-generic{
+    	float: none;
+    	width: 100%;
+    }
+}
+@media screen and (max-width: 500px){
+	.content-frame-generic div{
+		padding: 4px 0;
+	}
+	.form-generic div {
+		padding: 6px 5px;
+	}
+	.form-generic label{
+		text-align: left;
+	}
+	
+	.content-frame-generic .label{
+		text-align: left;
+	}
+	.content-frame-generic .value{
+		width: 90%;
+	}
+	
+	.form-generic input[type="text"], .form-up input[type="password"], .form-up input[type="file"]{
+		width: 90%;
+		padding: 6px 8px;
+		font-size: 1.1em;
+	}
+	.form-up input[type="submit"]{
+		padding: 8px 220x;
+		padding: 6px 8px;
+		font-size: 1.1em;
+	}
+	.form-generic textarea {
+		width: 90%;
+		padding: 6px 8px;
+	}
+	.form-generic select{
+		min-width: 90%;
+		margin-bottom: 6px;
+		padding: 6px 8px;
+		font-size: 1.1em;
+	}
+}

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-01-16T09:29:13 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="0db59874-366d-4444-beb1-2fd59373caaa">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="247"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="742"/>
+	<property name="net.sf.jasperreports.print.create.bookmarks" value="false"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="708"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="278"/>
+	<parameter name="nombre" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="fecha" class="java.util.Date"/>
+	<parameter name="producto" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT d.cod_bar, d.tit_nom_ape , d.dir_dom_des ,
+	d.nom_cli, d.fec_pro ,
+	d.dir_lab_des, d.dir_opc_des ,
+	  d.val_nro_ide , d.val_des_emi ,
+	   d.des_pro_val ,  d.des_nom_ape ,
+	    d.tit_tlf_dom , d.tit_tlf_lab , d.tit_tlf_opc ,
+	     d.dir_lab_emp , d.fec_ent ,o.dni_titular, o.nombre_titular,
+	     o.ape_paterno_titular, o.ape_materno_titular, o.horario_entrega,
+	     o.direccion, o.departamento,o.provincia, o.distrito,o.referencia, o.nombre_completo_titular,
+	     o.fecha_coordinada_entrega
+	FROM distribucion d,data_orbis o
+	WHERE 	 d.cod_cli = $P{nombre} 
+	AND	 d.fec_pro =  $P{fecha} 
+	AND	 d.cod_pro_val =  $P{producto}
+	AND      d.cod_bar=o.cod_bar]]>
+	</queryString>
+	<field name="cod_bar" class="java.lang.String"/>
+	<field name="tit_nom_ape" class="java.lang.String"/>
+	<field name="dir_dom_des" class="java.lang.String"/>
+	<field name="nom_cli" class="java.lang.String"/>
+	<field name="fec_pro" class="java.sql.Date"/>
+	<field name="dir_lab_des" class="java.lang.String"/>
+	<field name="dir_opc_des" class="java.lang.String"/>
+	<field name="val_nro_ide" class="java.lang.String"/>
+	<field name="val_des_emi" class="java.lang.String"/>
+	<field name="des_pro_val" class="java.lang.String"/>
+	<field name="des_nom_ape" class="java.lang.String"/>
+	<field name="tit_tlf_dom" class="java.lang.String"/>
+	<field name="tit_tlf_lab" class="java.lang.String"/>
+	<field name="tit_tlf_opc" class="java.lang.String"/>
+	<field name="dir_lab_emp" class="java.lang.String"/>
+	<field name="fec_ent" class="java.sql.Date"/>
+	<field name="dni_titular" class="java.lang.String"/>
+	<field name="nombre_titular" class="java.lang.String"/>
+	<field name="ape_paterno_titular" class="java.lang.String"/>
+	<field name="ape_materno_titular" class="java.lang.String"/>
+	<field name="horario_entrega" class="java.lang.String"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="departamento" class="java.lang.String"/>
+	<field name="provincia" class="java.lang.String"/>
+	<field name="distrito" class="java.lang.String"/>
+	<field name="referencia" class="java.lang.String"/>
+	<field name="nombre_completo_titular" class="java.lang.String"/>
+	<field name="fecha_coordinada_entrega" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="276">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField>
+				<reportElement x="110" y="12" width="100" height="20" uuid="7c27567d-5d46-480b-b746-9a513624cb49"/>
+				<textFieldExpression><![CDATA[$F{cod_bar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="111" width="54" height="14" uuid="ae52d0c1-b8d7-41b5-a613-52754c9d16f9"/>
+				<text><![CDATA[Direc. Ent]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement key="" x="69" y="30" width="161" height="30" uuid="426c9195-dad5-4808-9c8e-e686a46ac8f8"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="3of9" drawText="false" checksumRequired="false" evaluationTime="Report">
+					<jr:codeExpression><![CDATA[$F{cod_bar}]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<staticText>
+				<reportElement x="260" y="12" width="89" height="20" uuid="8d5df739-3ba7-4d00-9cd2-a02d5ce7b7fa"/>
+				<text><![CDATA[Tarjeta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="313" y="152" width="77" height="20" uuid="f07abdb9-e6fa-4113-848b-31a1c191c124"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[DNI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="293" y="134" width="97" height="20" uuid="a1acfe5f-456d-4c69-b56e-aafe0ab50e1d"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Persona Autorizada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="85" width="54" height="20" uuid="c14c1670-8618-4010-a27a-37312d531f48"/>
+				<text><![CDATA[Titular]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="470" y="105" width="30" height="20" uuid="10b35856-154c-43ff-8995-7130e415da4d"/>
+				<text><![CDATA[TLF.1]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="63" width="400" height="18" uuid="3fdd43fc-e680-4dd6-9c86-73744651025e"/>
+				<textFieldExpression><![CDATA["COMPROBANTE DE RECEPCIÓN DE "+$F{des_pro_val}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="19" y="191" width="541" height="15" uuid="05436809-ad25-4d8f-8d99-7b7734e532ab"/>
+				<text><![CDATA[Recibido por:(Ap. Pat/Ap.Mat./Nombres): 		 	    /    			    /        ]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="0" width="595" height="276" uuid="080f29da-58d8-43aa-8ea9-b20832e85575"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="19" y="214" width="552" height="20" uuid="9f363609-18da-4c2f-bd6f-ca52e884ea08"/>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Firma 					Fecha de Recepcion			Cargo/Vinculo]]></text>
+			</staticText>
+			<line>
+				<reportElement x="51" y="227" width="159" height="1" uuid="b8c9b173-e8e3-41fa-aa2b-b41a4880a92a"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="19" y="238" width="561" height="15" uuid="decfe7ba-2da7-4e71-989e-13f2b8eee58b"/>
+				<text><![CDATA[Aclaración			              Tipo Doc                N° Doc                              Fecha Emision             /          /        ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="494" y="251" width="77" height="1" uuid="af397b29-6985-477e-9e6e-d145c408c3f6"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="69" y="250" width="110" height="1" uuid="69566205-c4f4-4122-92e3-a3dc6e4d76ee"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="342" y="249" width="77" height="1" uuid="819ba2b2-83a1-4112-87e8-034375e40901"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="259" y="249" width="43" height="1" uuid="1b32c443-7f09-4820-9aa1-035a22bee64c"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="11" y="136" width="69" height="14" uuid="0c191f71-82ce-4ef9-a8e8-174bb1798052"/>
+				<text><![CDATA[Fecha Entrega]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="135" width="80" height="19" uuid="e2d5436c-b62e-45b9-afc0-4e80fd9bd2d7"/>
+				<textFieldExpression><![CDATA[$F{fec_ent}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="160" y="135" width="86" height="16" uuid="72b18c12-d640-44f3-80e0-43eb271b6888"/>
+				<text><![CDATA[Horario de Entrega]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="500" y="106" width="85" height="15" uuid="6da3270a-09e2-43a0-906c-92a4f9eea475"/>
+				<textFieldExpression><![CDATA[$F{tit_tlf_dom}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="360" y="13" width="120" height="19" uuid="76e00a28-bba7-4f88-ab34-6b4f2cd0f528"/>
+				<textFieldExpression><![CDATA[$F{val_nro_ide}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="200" y="205" width="371" height="1" uuid="e3dd4821-13c1-41dc-8921-637ab6e9b789"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="317" y="227" width="108" height="1" uuid="a2496d12-e25c-4236-b721-03192499ea93"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="492" y="227" width="82" height="1" uuid="dd59ba11-20d8-4b33-8d49-d4da479c4b5b"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="130" y="152" width="172" height="30" uuid="e269ab22-e58c-4800-aabb-9082a934c9d8"/>
+				<textFieldExpression><![CDATA[$F{horario_entrega}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="70" y="85" width="272" height="20" uuid="3351b316-5fbc-42a9-a154-521c8b0b3bd0"/>
+				<textFieldExpression><![CDATA[$F{nombre_completo_titular}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="70" y="107" width="290" height="27" uuid="7923f65e-e800-481b-b4bd-7727cf0d7be2"/>
+				<textFieldExpression><![CDATA[$F{direccion}+" "+$F{departamento}+" "+$F{provincia}+" "+$F{distrito}+" "+$F{referencia}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="154" width="120" height="18" uuid="38a5f904-e21c-4c2e-ae31-70a937179cae"/>
+				<textFieldExpression><![CDATA[$F{fecha_coordinada_entrega}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

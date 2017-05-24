@@ -1,0 +1,36 @@
+<%@include file="../include-param.jsp" %>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%@include file="../include-head.jsp" %>
+        <link rel="stylesheet" href="../static/css/default-forms.css">
+    </head>
+    <body>
+    	<%@include file="../include-menu.jsp" %>
+        <div class="content" STYLE="background:pink">
+        	<div class="content-form-login center">
+            <h2>Ingreso</h2>
+		    <form class="form-login" action="<c:url value='/inicio/login?targetUrl=${targetUrl}' />" method="POST">
+		    	<div>
+		    		<span><c:if test="${param.error != null}">Los datos ingresados no coinciden, ingrese nuevamente</c:if></span>
+		    	</div>
+			    <div>
+					<label for="usuario">Usuario</label>
+					<input type="text" name="username" value="" id="usuario" title="Ingrese aqui su Usuario" placeholder="ingrese su usuario"/>
+				</div>
+				<div>
+					<label for="contrasena">Contraseña</label>
+					<input type="password" name="password" value="" id="contrasena" autocorrect="off" title="Ingrese aqui su Contraseña" placeholder="ingrese su contraseña"/>
+				</div>
+				<div>
+					<input type="checkbox" name="_spring_security_remember_me" class="remember-me" id="remember-me"/><label for="remember-me" class="remember-me-label">Seguir conectado</label>
+				</div>
+				<div>
+					<input type="submit" class="boton-default" value="Iniciar sesi&oacute;n" id="smt"/>
+				</div>
+		    </form>
+		    </div>
+        </div>
+        <%@include file="../include-footer.jsp" %>
+    </body>
+</html>

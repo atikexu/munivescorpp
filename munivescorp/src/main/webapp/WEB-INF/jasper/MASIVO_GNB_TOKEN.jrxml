@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-02-15T09:32:21 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="0db59874-366d-4444-beb1-2fd59373caaa">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="247"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="742"/>
+	<property name="net.sf.jasperreports.print.create.bookmarks" value="false"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="708"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="278"/>
+	<parameter name="nombre" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="fecha" class="java.sql.Date"/>
+	<parameter name="producto" class="java.lang.String"/>
+	<parameter name="codigoss" class="java.util.List"/>
+	<queryString>
+		<![CDATA[SELECT DISTINCT d.cod_bar, d.tit_nom_ape , d.dir_dom_des ,
+                d.nom_cli, d.fec_pro , d.dir_lab_des, d.dir_opc_des ,
+                  d.val_nro_ide , d.val_des_emi , d.des_pro_val ,  d.des_nom_ape ,
+                    d.tit_tlf_dom , d.tit_tlf_lab , d.tit_tlf_opc , d.dir_lab_emp ,
+                direccion_entrega, autorizador_recibir,doc_autorizado, provincia,
+                distrito_direccion, referencia_entrega, nombre_empresa,nombre1,nombre2,nombre3,nombre4,nombre5,nombre6,token1,token2,token3,
+                token4,token5,token6,cantidad
+                
+                FROM distribucion d left join 
+                (
+                select distinct cod_bar,
+                               ( select  count(*) from data_gnbtoken b where b.cod_bar=a.cod_bar)  as cantidad,
+                               ( select  titular_del_documento from data_gnbtoken b where b.cod_bar=a.cod_bar order by titular_del_documento limit 1 offset 0 )  as nombre1,
+                               ( select  titular_del_documento from data_gnbtoken b where b.cod_bar=a.cod_bar order by titular_del_documento limit 1 offset 1 )  as nombre2,
+                               ( select  titular_del_documento from data_gnbtoken b where b.cod_bar=a.cod_bar order by titular_del_documento limit 1 offset 2 )  as nombre3,
+                               ( select  titular_del_documento from data_gnbtoken b where b.cod_bar=a.cod_bar order by titular_del_documento limit 1 offset 3 )  as nombre4,
+                               ( select  titular_del_documento from data_gnbtoken b where b.cod_bar=a.cod_bar order by titular_del_documento limit 1 offset 4 )  as nombre5,
+                               ( select  titular_del_documento from data_gnbtoken b where b.cod_bar=a.cod_bar order by titular_del_documento limit 1 offset 5 )  as nombre6,
+                               ( select   codigo_unico_seguimiento from data_gnbtoken b where b.cod_bar=a.cod_bar order by titular_del_documento limit 1 offset 0 )  as token1,
+                               ( select  codigo_unico_seguimiento from data_gnbtoken b where b.cod_bar=a.cod_bar order by titular_del_documento limit 1 offset 1 )  as token2,
+                               ( select  codigo_unico_seguimiento from data_gnbtoken b where b.cod_bar=a.cod_bar order by titular_del_documento limit 1 offset 2 )  as token3,
+                                ( select  codigo_unico_seguimiento from data_gnbtoken b where b.cod_bar=a.cod_bar order by titular_del_documento limit 1 offset 3 )  as token4,
+                                 ( select  codigo_unico_seguimiento from data_gnbtoken b where b.cod_bar=a.cod_bar order by titular_del_documento limit 1 offset 4 )  as token5,
+                                  ( select  codigo_unico_seguimiento from data_gnbtoken b where b.cod_bar=a.cod_bar order by titular_del_documento limit 1 offset 5 )  as token6,
+
+                               direccion_entrega, autorizador_recibir,doc_autorizado, provincia,
+                distrito_direccion, referencia_entrega, nombre_empresa
+                from data_gnbtoken a
+                ) t
+                  on d.cod_bar=t.cod_bar
+
+               WHERE 	 $X{IN, d.cod_bar,   codigoss}    
+                order by d.cod_bar]]>
+	</queryString>
+	<field name="cod_bar" class="java.lang.String"/>
+	<field name="tit_nom_ape" class="java.lang.String"/>
+	<field name="dir_dom_des" class="java.lang.String"/>
+	<field name="nom_cli" class="java.lang.String"/>
+	<field name="fec_pro" class="java.sql.Date"/>
+	<field name="dir_lab_des" class="java.lang.String"/>
+	<field name="dir_opc_des" class="java.lang.String"/>
+	<field name="val_nro_ide" class="java.lang.String"/>
+	<field name="val_des_emi" class="java.lang.String"/>
+	<field name="des_pro_val" class="java.lang.String"/>
+	<field name="des_nom_ape" class="java.lang.String"/>
+	<field name="tit_tlf_dom" class="java.lang.String"/>
+	<field name="tit_tlf_lab" class="java.lang.String"/>
+	<field name="tit_tlf_opc" class="java.lang.String"/>
+	<field name="dir_lab_emp" class="java.lang.String"/>
+	<field name="direccion_entrega" class="java.lang.String"/>
+	<field name="autorizador_recibir" class="java.lang.String"/>
+	<field name="doc_autorizado" class="java.lang.String"/>
+	<field name="provincia" class="java.lang.String"/>
+	<field name="distrito_direccion" class="java.lang.String"/>
+	<field name="referencia_entrega" class="java.lang.String"/>
+	<field name="nombre_empresa" class="java.lang.String"/>
+	<field name="nombre1" class="java.lang.String"/>
+	<field name="nombre2" class="java.lang.String"/>
+	<field name="nombre3" class="java.lang.String"/>
+	<field name="nombre4" class="java.lang.String"/>
+	<field name="nombre5" class="java.lang.String"/>
+	<field name="nombre6" class="java.lang.String"/>
+	<field name="token1" class="java.lang.String"/>
+	<field name="token2" class="java.lang.String"/>
+	<field name="token3" class="java.lang.String"/>
+	<field name="token4" class="java.lang.String"/>
+	<field name="token5" class="java.lang.String"/>
+	<field name="token6" class="java.lang.String"/>
+	<field name="cantidad" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="277">
+			<textField isBlankWhenNull="true">
+				<reportElement x="353" y="10" width="100" height="20" uuid="ca7f5109-68d8-411e-8f71-46a29470633a"/>
+				<textFieldExpression><![CDATA[$F{fec_pro}.toString()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="10" width="120" height="20" uuid="929f8a7d-18d7-4e53-bcb3-05faa611ae98"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{cod_bar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="100" width="54" height="14" uuid="63579a31-d051-4704-ab67-85d61d29d938"/>
+				<text><![CDATA[Direc. Ent]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement key="" x="64" y="29" width="166" height="30" uuid="26f44aca-f4ce-4054-9e87-e1f3bbf4b74b"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="3of9" drawText="false" checksumRequired="false">
+					<jr:codeExpression><![CDATA[$F{cod_bar}]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<staticText>
+				<reportElement x="260" y="10" width="89" height="20" uuid="17a7b708-f478-49d5-bda1-436da8789b76"/>
+				<text><![CDATA[Fecha Recepcion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="460" y="30" width="89" height="20" uuid="1ceee46a-9ba4-4f19-8793-ab728d0e7444"/>
+				<text><![CDATA[Nro. Doc.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="30" width="193" height="20" uuid="35f0b2cd-f823-4e97-8905-d8dbce677a11"/>
+				<text><![CDATA[Persona Autorizada para la Entrega]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="81" width="54" height="20" uuid="51084efa-4d9f-4e33-bfc1-ab24d369b684"/>
+				<text><![CDATA[Empresa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="462" y="10" width="60" height="20" uuid="1af849c5-4864-49df-9d21-2ef108d0809b"/>
+				<text><![CDATA[Cant. Token]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="90" y="64" width="376" height="18" uuid="e4676e32-0bc2-4155-b124-be46960bbda7"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["COMPROBANTE DE RECEPCIÓN DE "+$F{des_pro_val}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="231" y="210" width="60" height="15" uuid="89c04d10-b2ae-4091-a89f-0195b36a3029"/>
+				<text><![CDATA[Recibido por ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="255" width="570" height="15" uuid="12858a47-836d-4cd6-a537-0ebb4e5ce290"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Declaro haber recibido por parte del Banco, TOKEN de Banca Empresa detallados en el recibo]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="0" width="595" height="277" uuid="a2317031-da02-4733-90df-29f229ea9c72">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="231" y="126" width="79" height="72" uuid="740d57c3-29a7-4e79-9d3b-70991637b391"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="253" y="199" width="41" height="20" uuid="4bc41d07-5e92-4dba-a9c5-8f9187bdb9ea"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Huella]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="190" width="160" height="20" uuid="4fed0156-3ee1-4cba-894a-c77a72c83c61"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Firma Persona Autorizada]]></text>
+			</staticText>
+			<line>
+				<reportElement x="361" y="187" width="191" height="1" uuid="493c720f-5342-4777-9e1a-574a9b950a1b"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="231" y="225" width="349" height="15" uuid="4a56a17e-13ec-4f20-b048-932193fe52bf"/>
+				<text><![CDATA[Tipo Doc                N° Doc                              Fecha Emision        /        /        ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="231" y="241" width="349" height="15" uuid="465f80b2-12ac-46ee-92ac-ba33f5b4c042"/>
+				<text><![CDATA[Fecha Entrega        /        /          Hora             Fecha Vencmto        /        /        ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="500" y="237" width="77" height="1" uuid="3a1f636f-fbf9-4892-9c8f-d2aa3d51fa7e"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="503" y="252" width="77" height="1" uuid="68240618-4f66-48ab-a84c-e49119e29e21"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="291" y="221" width="291" height="1" uuid="04e9883c-7088-4aa9-a57a-f90fc2f0c850"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="350" y="237" width="77" height="1" uuid="8922b0d2-80d3-467f-927e-09d6c6a7e449"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="270" y="237" width="43" height="1" uuid="f1f9b49b-653c-485e-b3d3-18f642f89b61"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="297" y="252" width="77" height="1" uuid="55e6ba51-c9a5-48ef-8096-6580e38eab38"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="394" y="252" width="37" height="1" uuid="78eddbca-112a-4fde-b06b-0be2a5fcf0b3"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="11" y="130" width="61" height="14" uuid="356f7161-bb18-444c-9287-ca03dafa6b61"/>
+				<text><![CDATA[Nro de Token]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="130" width="100" height="14" uuid="1b738d66-862b-4d5d-80bf-985042c8c1f4"/>
+				<text><![CDATA[Nombre de Usuario]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="99" width="480" height="30" uuid="70363b46-eb3d-4885-b4cd-37089afe5f06"/>
+				<textFieldExpression><![CDATA[$F{direccion_entrega}+" "+$F{provincia}+" "+$F{distrito_direccion}+" "+$F{referencia_entrega}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="260" y="46" width="200" height="19" uuid="ddb99567-fb9a-4efe-8324-88410644dfe3"/>
+				<textFieldExpression><![CDATA[$F{autorizador_recibir}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="460" y="45" width="100" height="22" uuid="2665b64d-e1e1-4f1f-98da-0aae00e359ba"/>
+				<textFieldExpression><![CDATA[$F{doc_autorizado}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="70" y="81" width="361" height="25" uuid="f53275c0-8e33-46c2-bbfc-f5bb13ca77cf"/>
+				<textFieldExpression><![CDATA[$F{nombre_empresa}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="522" y="10" width="58" height="20" uuid="39018ce6-ce63-4267-a8dc-e213874589a5"/>
+				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="10" y="145" width="69" height="15" uuid="4f5f6cca-119d-4397-9b13-7849f7d7b5a4"/>
+				<textFieldExpression><![CDATA[$F{token1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="82" y="145" width="130" height="15" uuid="d3f2061f-78d1-485c-a926-afcf2184915e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nombre1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="10" y="160" width="70" height="15" uuid="b962e663-fd66-451a-88e3-17352f946d85">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{token2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="10" y="175" width="70" height="15" uuid="05920ab5-e11a-4e73-9381-bdd001f92c5c">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{token3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="160" width="132" height="15" uuid="f210ab6a-13b6-4cb2-b921-84a85501d7cb">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nombre2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="175" width="132" height="15" uuid="c1f19e3d-959d-4220-b1a8-b9c4c8d26549">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nombre3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="190" width="133" height="15" uuid="551c8c98-dae4-4c47-b650-cf9fb657f8e3">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nombre4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="10" y="190" width="70" height="15" uuid="2cd2a746-28f9-4c0f-b538-c174ecd422f0">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{token4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="10" y="206" width="69" height="15" uuid="f6cd8d09-fd61-4d83-8121-b1e8d59f6f61">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{token5}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="206" width="133" height="15" uuid="4fa17a70-dbf0-4452-aef7-06b23ac4200e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nombre5}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="11" y="222" width="68" height="15" uuid="68869f8b-fe40-4279-8a57-ed1aa0bb471f">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{token6}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="221" width="132" height="15" uuid="990dce6d-f869-4c27-88b6-1407e6d3f5fd">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nombre6}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

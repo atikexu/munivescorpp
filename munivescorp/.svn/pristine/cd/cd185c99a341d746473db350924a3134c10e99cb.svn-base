@@ -1,0 +1,374 @@
+package pe.nasqa.values.model;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import pe.nasqa.values.dao.DistribucionDao;
+import pe.nasqa.values.dao.ReporteDistribucionDao;
+import pe.nasqa.values.model.entity.Cliente;
+import pe.nasqa.values.model.entity.CordinacionPDF;
+import pe.nasqa.values.model.entity.Distribucion;
+import pe.nasqa.values.model.entity.DistribucionCoord;
+import pe.nasqa.values.model.entity.DistribucionCoordTelf;
+import pe.nasqa.values.model.entity.DistribucionPaquete;
+import pe.nasqa.values.model.entity.DistribucionVisita;
+import pe.nasqa.values.model.entity.Estados;
+import pe.nasqa.values.model.entity.ExportBaseCourier;
+import pe.nasqa.values.model.entity.ExportVisita;
+import pe.nasqa.values.model.entity.HojaRutaDetalle;
+import pe.nasqa.values.model.entity.Mensajero;
+import pe.nasqa.values.model.entity.OrdenProceso;
+import pe.nasqa.values.model.entity.OrdenProcesoAvance;
+import pe.nasqa.values.model.entity.OrdenProcesoCargos;
+import pe.nasqa.values.model.entity.RegistroCoord;
+import pe.nasqa.values.model.entity.ReporteDistribucionJoin;
+import pe.nasqa.values.model.entity.Valorado;
+
+@Service
+public class DistribucionModel{
+
+	@Autowired
+	private DistribucionDao distribucionDao;
+	
+	@Autowired
+	private ReporteDistribucionDao reporteDistDao;
+	
+	private Logger log = Logger.getLogger(DistribucionModel.class);
+	
+	@Transactional(readOnly=true)
+	public List<Distribucion> findDistCodName(String codBar, String nroRef,
+			String docIde, String nomDes, String codCli) {
+		return distribucionDao.findDistCodName(codBar, nroRef, docIde, nomDes, codCli);
+	}
+	
+	@Transactional(readOnly=true)
+	public List<Distribucion> findDistOrdPro(String ordPro, String codCli) {
+		return distribucionDao.findDistOrdPro(ordPro, codCli);
+	}
+	
+	@Transactional(readOnly=true)
+	public Distribucion getByCodBar(String codBar, String codCli) {
+		return distribucionDao.getByCodBar(codBar, codCli);
+	}
+
+	@Transactional(readOnly=true)
+	public List<DistribucionVisita> findVisitas(String codBar) {
+		return distribucionDao.findVisitas(codBar);
+	}
+	
+	@Transactional(readOnly=true)
+	public List<DistribucionCoord> findCoordinaciones(String codBar) {
+		return distribucionDao.findCoordinaciones(codBar);
+	}
+	
+	@Transactional(readOnly=true)
+	public List<DistribucionCoordTelf> findCoordinacionesTelf(String codBar) {
+		return distribucionDao.findCoordinacionesTelef(codBar);
+	}
+	
+	@Transactional(readOnly=true)
+	public List<DistribucionPaquete> findPaquetes(String codBar) {
+		return distribucionDao.findPaquetes(codBar);
+	}
+	
+	@Transactional(readOnly=true)
+	public List<DistribucionPaquete> findPaqueteCodName(String nroDoc, String nomDes, String codCli) {
+		return distribucionDao.findPaqueteCodName(nroDoc, nomDes, codCli);
+	}
+	
+	@Transactional(readOnly=true)
+	public DistribucionCoord findDireccionEntrega(List<DistribucionVisita> visitas){
+		String codBar=null;
+		Date fecCoo=null;
+		
+		for(DistribucionVisita visita: visitas){
+			if(visita.getIndSit().equals(MVConstante.INDICADOR_SITUACION_ENTREGA)){
+				codBar=visita.getCodBar();
+				fecCoo=visita.getFecHoj();
+				log.error("Fecha de coordinacion: "+fecCoo);
+				break;
+			}
+		}
+		
+		if(codBar!=null && fecCoo!=null){
+			List<DistribucionCoord> lstCoord = distribucionDao.findDirEntrega(codBar, fecCoo);
+			if(lstCoord.size() > 0){
+				return lstCoord.get(lstCoord.size() - 1);
+			}else{
+				return new DistribucionCoord();
+			}
+		}else{
+			return null;
+		}
+	}
+	
+	//REPORTES
+	@Transactional(readOnly=true)
+	public OrdenProceso findOpInfo(String ordPro, String codCli){
+		return distribucionDao.getOPInfo(ordPro, codCli);
+	}
+	
+	@Transactional(readOnly=true)
+	public List<OrdenProcesoAvance> findOpAvance(String ordPro, String codCli){
+		return distribucionDao.getOPAvance(ordPro,codCli);
+	}
+	
+	public double findOpAvanceTotal(List<OrdenProcesoAvance> opAvance){
+		double result=0;
+		for(OrdenProcesoAvance opa : opAvance){
+			result+=opa.getCantidad();
+		}
+		return result;
+	}
+	
+	public Map<String,String> findOpAvanceStringImage(List<OrdenProcesoAvance> opAvance){
+		Map<String,String> result=new HashMap<String, String>();
+		double total = findOpAvanceTotal(opAvance);
+		double porcent = 0;
+		String label = "";
+		String value = "";
+		for(OrdenProcesoAvance opa : opAvance){
+			porcent = opa.getCantidad()/total;
+			label+=("|")+(opa.getGestion() +" "+ MVDinamico.numberRounder(porcent*100,2) + "%");
+			value+=(value.length()>0?",":"")+(MVDinamico.numberRounder(porcent,2));
+		}
+		result.put("label", label);
+		result.put("value", value);
+		return result;
+	}
+	
+	@Transactional(readOnly=true)
+	public List<OrdenProcesoCargos> findOpCargos(String ordPro, String codCli){
+		return distribucionDao.getOPCargos(ordPro,codCli);
+	}
+	
+	public double findOpCargosTotal(List<OrdenProcesoCargos> opCargos){
+		double result=0;
+		for(OrdenProcesoCargos opc : opCargos){
+			
+			result+=opc.getCantidad();
+		}
+		return result;
+	}
+	
+	public Map<String,String> findOpCargosStringImage(List<OrdenProcesoCargos> opCargos){
+		Map<String,String> result=new HashMap<String, String>();
+		double total = findOpCargosTotal(opCargos);
+		double upload = 0;
+		String label = "";
+		String value = "";
+		
+		for(OrdenProcesoCargos opc : opCargos){
+			String cargo=opc.getCargos()==null?"0":opc.getCargos();
+			if(!cargo.equals("0")){
+				upload+=opc.getCantidad();
+			}
+		}
+		label+=("|SIN Imagen "+MVDinamico.numberRounder(((total-upload)/total)*100,2) + "%"+"|CON Imagen "+MVDinamico.numberRounder(((upload)/total)*100,2)+"%");
+		value+=(MVDinamico.numberRounder(((total-upload)/total)*100,2)+","+MVDinamico.numberRounder(((upload)/total)*100,2));
+		result.put("label", label);
+		result.put("value", value);
+		return result;
+	}
+	
+	@Transactional(readOnly=true)
+	public List<OrdenProceso> findOpsInfo(String ordPro, String codCli){
+		List<String> ops=MVDinamico.stringSplitToArray(ordPro);
+		if(ops.size()>0){
+			return distribucionDao.getOPsInfo(ops, codCli);
+		}
+		return null;
+	}
+	
+	@Transactional(readOnly=true)
+	public List<OrdenProceso> findOpsInfo(Date fromDate, Date toDate, String codCli){
+		return distribucionDao.getOPsInfo(fromDate, toDate, codCli);
+	}
+	
+	@Transactional(readOnly=true)
+	public String[] findOpsInfoUnicos(Date fromDate, Date toDate, String codCli){
+		return distribucionDao.findOpsInfoUnicos(fromDate, toDate, codCli);
+	}
+	
+	
+	@Transactional
+	public Map<String,String> generateFilesReporteDistOPs(String ordPro[], String codCliente, int idUsuario, 
+			String path, String fileName,
+			boolean datoOpcional, boolean datoMandatario, 
+			int cantVisita, int cantCoord, int cantCoordTelf) {
+		Map<String,String> result = new HashMap<String,String>();
+		
+		List<ReporteDistribucionJoin> distribucionJoinList = new ArrayList<ReporteDistribucionJoin>();
+		List<ReporteDistribucionJoin> reporteOp = null;
+		OrdenProceso op = null;
+		for (int i = 0; i < ordPro.length; i++) {
+			op = distribucionDao.getOPInfo(ordPro[i], codCliente);
+			if(op!=null){
+				reporteDistDao.setCountDetalles(op.getOp(), idUsuario);
+				reporteDistDao.preloadTempDataVisitas(op.getOp(), idUsuario);
+				reporteDistDao.preloadTempDataCoord(op.getOp(), idUsuario);
+				reporteDistDao.preloadTempDataCoordTelf(op.getOp(), idUsuario);
+				
+				reporteOp = reporteDistDao.getListReportePorOP(op.getOp(), idUsuario);
+				for(ReporteDistribucionJoin rep:reporteOp){
+					distribucionJoinList.add(rep);
+				}
+			}
+
+		}
+		MUtilReportFiles reportFiles = new MUtilReportFiles();
+		System.out.println(path+" "+fileName+" "+codCliente+" "+datoOpcional+" "+datoMandatario+" "+cantVisita+" "+cantCoord+" "+cantCoordTelf+" "+distribucionJoinList);
+		result = reportFiles.createFilesReport(path, fileName, codCliente, datoOpcional, datoMandatario, cantVisita, cantCoord, cantCoordTelf, distribucionJoinList);
+		
+		return result;
+	}
+	
+	@Transactional
+	public Map<String,String> generateFilesReporteDistOPs_R2(String ordPro[], String codCliente, int idUsuario, 
+															String path, String fileName,
+															boolean datoOpcional, boolean datoMandatario, 
+															int cantVisita, int cantCoord, int cantCoordTelf) {
+		
+		Map<String,String> result = new HashMap<String,String>();		
+		List<ReporteDistribucionJoin> distribucionJoinList = new ArrayList<ReporteDistribucionJoin>();
+		List<ReporteDistribucionJoin> reporteOp = null;
+		OrdenProceso op = null;
+		for (int i = 0; i < ordPro.length; i++) {
+			op = distribucionDao.getOPInfo(ordPro[i], codCliente);
+			if(op!=null){
+				reporteDistDao.setCountDetalles(op.getOp(), idUsuario);
+				reporteDistDao.preloadTempDataVisitas(op.getOp(), idUsuario);
+				reporteDistDao.preloadTempDataCoord(op.getOp(), idUsuario);
+				reporteDistDao.preloadTempDataCoordTelf(op.getOp(), idUsuario);
+				
+				reporteOp = reporteDistDao.getListReportePorOP(op.getOp(), idUsuario);
+				for(ReporteDistribucionJoin rep:reporteOp){
+					distribucionJoinList.add(rep);
+				}
+			}
+
+		}
+		MUtilReportFiles reportFiles = new MUtilReportFiles();
+		result = reportFiles.createFilesReport_R2(path, fileName, codCliente, datoOpcional, datoMandatario, cantVisita, cantCoord, cantCoordTelf, distribucionJoinList);
+		
+		return result;
+	}
+	
+	@Transactional(readOnly=true)
+	public List<Estados> getEstadosToComboBox(String tipo, String idPadre, String codigo_cliente){
+		return distribucionDao.getEstadosToComboBox(tipo, idPadre, codigo_cliente);
+	}
+	
+	@Transactional(readOnly=true)
+	public Estados getEstadoByIdEstado(String id_estado){
+		return distribucionDao.getEstadoByIdEstado(id_estado);
+	}
+	
+	@Transactional
+	public void actualizarDistribucion(Distribucion distribucion){
+		distribucionDao.updateDistribucion(distribucion);
+	}
+	
+	@Transactional
+	public void guardar(DistribucionVisita distribucionVisita){
+		distribucionDao.saveDistribucion(distribucionVisita);
+	}
+	
+	@Transactional(readOnly=true)
+	public CordinacionPDF getCordinacionPDFUno(String id_cordinacion){
+		return distribucionDao.getCordinacionPDFUno(id_cordinacion);
+	}
+	
+	@Transactional(readOnly=true)
+	public List<CordinacionPDF> getCordinacionPDFVarios(Date fec_coo, String cod_msj){
+		return distribucionDao.getCordinacionPDFVarios(fec_coo, cod_msj);
+	}
+	
+	@Transactional(readOnly=true)
+	public List<ExportBaseCourier> getBaseCourier(String ordenProceso, String cod_msj){
+		return distribucionDao.getBaseCourier(ordenProceso, cod_msj);
+	}
+	
+	@Transactional
+	public List<Valorado> getProductoXCliente(String cod_cliente) {
+		return distribucionDao.getProductoXCliente(cod_cliente);
+	}
+	
+	@Transactional(readOnly=true)
+	public List<Estados> getEstadosMotivosToComboBox(String tipo, String idPadre, String codigo_cliente){
+		return distribucionDao.getEstadosMotivosToComboBox(tipo, idPadre, codigo_cliente);
+	}
+
+	@Transactional
+	public Distribucion getDistribucionXCodBar(String cod_bar){
+		return distribucionDao.getDistribucionXCodBar(cod_bar);
+	}
+	
+	@Transactional(readOnly=true)
+	public List<Object> getDatosXCodigo(String codigo){
+		return distribucionDao.getDatosXCodigo(codigo);
+	}
+	
+	@Transactional(readOnly=true)
+	public Integer idImportMax(){
+		return distribucionDao.idImportMax();
+	}
+	
+	@Transactional(readOnly=true)
+	public List<Estados> getEstadosMotivos(String tipo, String idPadre, String codigo_cliente){
+		return distribucionDao.getEstadosMotivos(tipo,idPadre,codigo_cliente);
+	}
+	
+	@Transactional
+	public DistribucionVisita getDistribucionVisitaXCodBar(String cod_bar){
+		return distribucionDao.getDistribucionVisitaXCodBar(cod_bar);
+	}
+	
+	@Transactional
+	public void delete(DistribucionVisita entity){
+		distribucionDao.delete(entity);
+	}
+	
+	@Transactional
+	public void update(DistribucionVisita entity){
+		distribucionDao.update(entity);
+	}
+	
+	@Transactional
+	public DistribucionVisita getDistribucionVisitaXID(Integer id){
+		return distribucionDao.getDistribucionVisitaXID(id);
+	}
+		
+	@Transactional
+	public List<Cliente> getClientes() {
+		return distribucionDao.getClientes();
+	}
+	
+	@Transactional
+	public List<Object> getCodbarCoordinacion(String codBar) {
+		return distribucionDao.getCodbarCoordinacion(codBar);
+	}
+	
+	@Transactional
+	public Integer getCodbarPqr(String codBar) {
+		return distribucionDao.getCodbarPqr(codBar);
+	}
+	
+	@Transactional
+	public List<Object> coordinacionesXCodBarFecha(String codBar,Date fecha) {
+		return distribucionDao.coordinacionesXCodBarFecha(codBar, fecha);
+	}
+	
+	@Transactional
+	public List<Object> listaCoordinacionesFecha(Date fecha) {
+		return distribucionDao.listaCoordinacionesFecha(fecha);
+	}
+}

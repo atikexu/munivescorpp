@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-01-11T11:03:36 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="0db59874-366d-4444-beb1-2fd59373caaa">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="213"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="779"/>
+	<property name="net.sf.jasperreports.print.create.bookmarks" value="false"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="nombre" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="fecha" class="java.sql.Date"/>
+	<parameter name="producto" class="java.lang.String"/>
+	<parameter name="codigoss" class="java.util.List"/>
+	<queryString>
+		<![CDATA[SELECT d.cod_bar, d.tit_nom_ape , d.dir_dom_des ,
+	d.nom_cli, d.fec_pro , d.dir_lab_des, d.dir_opc_des ,
+	  d.val_nro_ide , d.val_des_emi ,  d.des_pro_val ,  d.des_nom_ape ,
+	    d.tit_tlf_dom , d.tit_tlf_lab , d.tit_tlf_opc ,
+	    t.tipo_emision, t.nom_mandatario_1, t.nom_mandatario_2, t.num_doc_mandatario_1,
+	    t.num_doc_mandatario_2, t.dom_titular_direccion, t.dom_titular_ciudad, t.dom_titular_referencia,
+	     t.dom_titular_telefono, t.nombre_empresa, t.tipo_tarjeta,te.des_emision, tj.des_tarjeta,
+	    d.dir_dom_dis,d.dir_dom_pro,d.dir_dom_dep,d.dir_lab_dis,d.dir_lab_pro, d.dir_lab_dep,
+	    d.dir_opc_dis,d.dir_opc_pro,d.dir_opc_dep
+	FROM distribucion d, data_gnbtarjeta t, tipo_emision te, tipo_tarjeta tj
+		WHERE 	 $X{IN, d.cod_bar,   codigoss}
+	AND d.cod_bar=t.cod_bar
+	AND te.cod_emision=t.tipo_emision
+	AND tj.cod_tarjeta=t.tipo_tarjeta
+	order by d.cod_bar]]>
+	</queryString>
+	<field name="cod_bar" class="java.lang.String"/>
+	<field name="tit_nom_ape" class="java.lang.String"/>
+	<field name="dir_dom_des" class="java.lang.String"/>
+	<field name="nom_cli" class="java.lang.String"/>
+	<field name="fec_pro" class="java.sql.Date"/>
+	<field name="dir_lab_des" class="java.lang.String"/>
+	<field name="dir_opc_des" class="java.lang.String"/>
+	<field name="val_nro_ide" class="java.lang.String"/>
+	<field name="val_des_emi" class="java.lang.String"/>
+	<field name="des_pro_val" class="java.lang.String"/>
+	<field name="des_nom_ape" class="java.lang.String"/>
+	<field name="tit_tlf_dom" class="java.lang.String"/>
+	<field name="tit_tlf_lab" class="java.lang.String"/>
+	<field name="tit_tlf_opc" class="java.lang.String"/>
+	<field name="tipo_emision" class="java.lang.String"/>
+	<field name="nom_mandatario_1" class="java.lang.String"/>
+	<field name="nom_mandatario_2" class="java.lang.String"/>
+	<field name="num_doc_mandatario_1" class="java.lang.String"/>
+	<field name="num_doc_mandatario_2" class="java.lang.String"/>
+	<field name="dom_titular_direccion" class="java.lang.String"/>
+	<field name="dom_titular_ciudad" class="java.lang.String"/>
+	<field name="dom_titular_referencia" class="java.lang.String"/>
+	<field name="dom_titular_telefono" class="java.lang.String"/>
+	<field name="nombre_empresa" class="java.lang.String"/>
+	<field name="tipo_tarjeta" class="java.lang.String"/>
+	<field name="des_emision" class="java.lang.String"/>
+	<field name="des_tarjeta" class="java.lang.String"/>
+	<field name="dir_dom_dis" class="java.lang.String"/>
+	<field name="dir_dom_pro" class="java.lang.String"/>
+	<field name="dir_dom_dep" class="java.lang.String"/>
+	<field name="dir_lab_dis" class="java.lang.String"/>
+	<field name="dir_lab_pro" class="java.lang.String"/>
+	<field name="dir_lab_dep" class="java.lang.String"/>
+	<field name="dir_opc_dis" class="java.lang.String"/>
+	<field name="dir_opc_pro" class="java.lang.String"/>
+	<field name="dir_opc_dep" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="276">
+			<textField>
+				<reportElement x="110" y="11" width="100" height="20" uuid="0db8a3f8-1df2-4f61-a0eb-c46c138ec0e8"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cod_bar}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="91" width="54" height="14" uuid="6295f782-418a-43d5-ab3b-6fa534e5db73"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Direc. Ent]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="137" width="290" height="30" uuid="5830743d-b08c-4678-b8ad-66746cb3be29"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dir_dom_des}+" "+$F{dir_dom_dep}+" "+$F{dir_dom_pro}+" "+$F{dir_dom_dis}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="114" width="54" height="20" uuid="7a86065d-ffb0-4901-9424-edc8a7f1b28c"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Direc. Lab]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="112" width="290" height="30" uuid="23b3b153-0cb2-4141-b783-40b12605e305"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dir_lab_des}+" "+$F{dir_lab_dep}+" "+$F{dir_lab_pro}+" "+$F{dir_lab_dis}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="138" width="54" height="18" uuid="0ed6b844-3d9d-4cea-9900-18d54dcd7bdd"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Direc. Dom]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="164" width="290" height="30" uuid="9452aa51-7583-42b5-a092-436f104cac3f"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dir_opc_des}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="70" y="70" width="290" height="30" uuid="e78b77fe-5b98-48e7-beef-07e4dbe56fac"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tit_nom_ape}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement key="" x="78" y="28" width="152" height="30" uuid="8cda4e1e-815b-406a-9292-7c965ddd7b11"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="3of9" drawText="false" checksumRequired="false" evaluationTime="Report">
+					<jr:codeExpression><![CDATA[$F{cod_bar}]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<staticText>
+				<reportElement x="260" y="11" width="89" height="20" uuid="039f0f6f-8706-4205-9983-eab25d7c7106"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Tarjeta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="41" width="89" height="20" uuid="caeb0023-443a-45e8-ab6a-416c04bac503"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Mandatario 2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="27" width="89" height="20" uuid="76400060-9f8e-47c2-9012-8d40a1e5bd1b"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Mandatario 1]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="360" y="11" width="120" height="20" uuid="44295bec-db99-42b8-b2d4-817cc7491875"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{val_nro_ide}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="70" width="54" height="20" uuid="99258b90-ddd1-4a3c-a769-c4cf2147404b"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Titular]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="368" y="70" width="80" height="20" uuid="d7e8ff81-28f1-4ec4-8f9d-1bc1d7c81b48"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Destinatario]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="430" y="71" width="160" height="14" uuid="bc76402c-792e-4c11-bd02-694fedbcd800"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_nom_ape}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="490" y="11" width="100" height="23" uuid="8283f0db-1775-4198-8df3-16d2d34dff58"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo_emision}+""+$F{tipo_tarjeta}+" "+$F{des_emision}+" "+$F{des_tarjeta}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="70" y="54" width="450" height="18" uuid="4e91873d-7716-4b7f-afad-bce69b4a4cbe"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["COMPROBANTE DE RECEPCIÓN DE "+$F{des_pro_val}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="164" width="54" height="18" uuid="1a4c0eca-d99e-4a04-8e10-755a9c8ac4b8"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Direc. Opc]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="112" width="100" height="30" uuid="c7b68e30-3ac7-428b-8424-f1912d55aa34"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tit_tlf_lab}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="410" y="114" width="70" height="30" uuid="a3ab31ce-b532-4dcb-94a9-e6c28bdd1d8f"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[TLF. 2]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="141" width="100" height="30" uuid="12dc0da5-ab43-4ba1-ba99-b5bcdea6576e"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tit_tlf_dom}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="410" y="142" width="70" height="30" uuid="19043c0c-df24-403a-80f1-67adb4385ea9"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[TLF.3]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="165" width="100" height="30" uuid="21258968-919e-4c69-8377-3ffd41f118c1"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tit_tlf_opc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="410" y="164" width="70" height="30" uuid="8bffb61c-5d3e-47da-aa30-7cb26dcb6af2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[TLF.4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="87" width="70" height="30" uuid="ebdc5b02-4b12-4a11-a123-b75e66428274"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[TLF. 1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="203" width="570" height="45" uuid="4cd8e7fe-3878-447f-b0ad-80844460bb5c"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Recibido por: (Ap. Pat/Ap. Mat/Nombres): ____________________________/_________________________/____________________
+Firma____________________________Fecha de recepción________________________Cargo vinculo________________________
+Aclaración________________________Tipo Doc_______Num. Doc____________________Fecha emisión_______/______/_______]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="-1" y="1" width="596" height="275" uuid="72cf48d1-69ee-4603-b751-ae2c4d2233ac"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="78" y="91" width="15" height="15" uuid="ae2fb7a9-ffb7-4e12-9a7e-d9d8c7acf633">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="77" y="115" width="15" height="15" uuid="e10071e2-ee12-49f6-a702-385b623780da">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="77" y="140" width="15" height="15" uuid="1a3ff5d3-1fc7-462e-a00a-6f6566cd6482">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="77" y="165" width="15" height="15" uuid="11d41367-00ca-4451-b46c-2ad2431c6615">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</rectangle>
+			<textField isBlankWhenNull="true">
+				<reportElement x="360" y="27" width="130" height="16" uuid="6f7ccb80-1747-4860-b01a-10c6e0b3b3fa"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_mandatario_1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="360" y="40" width="130" height="18" uuid="1f280bdb-9f34-43e5-8657-0a0c987d895f"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num_doc_mandatario_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="490" y="28" width="100" height="15" uuid="b6e382dd-47e4-41ce-9e2b-d9022d74f046"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num_doc_mandatario_1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="490" y="40" width="100" height="18" uuid="e6c2f117-8dd9-49fc-af46-59bfd01ca28a"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num_doc_mandatario_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="187" width="170" height="17" uuid="77cfeb29-7e26-4aaa-88de-9580e4de78c2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_empresa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="187" width="100" height="18" uuid="805174dc-548f-4383-8858-19900a9017cf"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Empresa]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="87" width="290" height="30" uuid="f08645ca-d019-4878-b113-483626636475"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dom_titular_direccion}+" "+$F{dom_titular_ciudad}+" "+$F{dom_titular_referencia}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="88" width="100" height="22" uuid="73568bd0-16c5-4515-b38b-6b5b930d7abd"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dom_titular_telefono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="239" width="370" height="27" uuid="cea49985-8f7a-4e75-bb47-40097c5ec6c3"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo_emision}==null?"": 
+$F{tipo_emision}.equals("1")?"Declaro haber recibido por parte del Banco la presente tarjeta de crédito/ clave secreta/ carta de bienvenida/ tarjeta con número de central de bloqueo/ manual de uso/ calendario de pago.":
+$F{tipo_emision}.equals("2")?"Declaro haber recibido por parte del Banco la presente tarjeta de crédito/ clave secreta/ carta de bienvenida/ tarjeta con número de central de bloqueo.":
+$F{tipo_emision}.equals("3")?"Declaro haber recibido por parte del Banco la presente tarjeta de crédito/ carta de bienvenida.":
+$F{tipo_emision}.equals("5")?"Declaro haber recibido por parte del Banco la presente tarjeta de crédito/ clave secreta/ carta de bienvenida/ tarjeta con número de central de bloqueo.":""]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

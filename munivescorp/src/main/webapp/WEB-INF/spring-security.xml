@@ -1,0 +1,91 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/security 
+                    http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+    
+    <!-- We will be defining all security related configurations in this file -->
+    
+<!--     <security:global-method-security secured-annotations="enabled" /> -->
+    
+    <http use-expressions="true" auto-config="true" access-denied-page="/inicio/error403.htm" >
+        <!-- this means all URL in this app will be checked if user is authenticated -->
+<!--         <intercept-url pattern="/*" access="permitAll"/> -->
+        <intercept-url pattern="/ws/**" access="permitAll"/>
+        <intercept-url pattern="/static/**" access="permitAll"/>
+        <intercept-url pattern="/dinamic/**" access="permitAll"/>
+        
+        <intercept-url pattern="/inicio/**.htm" access="permitAll"/>
+        <intercept-url pattern="/admin/**.htm" access="hasAnyRole('DI_ADMIN','DI_CONFIG_EST')"/>
+        <intercept-url pattern="/usuario/**.htm" access="hasRole('DI_ADMIN')"/>
+        
+        <intercept-url pattern="/distribucion/consulta_**.htm" access="hasAnyRole('DI_ADMIN','DI_CONSULTAS',  'CL_ADMIN','CL_CONSULTAS','DI_COURIER')"/>
+        <intercept-url pattern="/distribucion/reporte_**.htm" access="hasAnyRole('DI_ADMIN','DI_REPORTES',  'CL_ADMIN','CL_REPORTES','DI_COURIER')"/>
+        
+        <intercept-url pattern="/coordinacion/coord_**.htm" access="hasAnyRole('DI_ADMIN','DI_COORDINACION',  'CL_ADMIN','CL_COORDINACION')"/>
+        <intercept-url pattern="/coordinacion/gestt_**.htm" access="hasAnyRole('DI_ADMIN','DI_COORDINACION','DI_COORDINACION_TELEF', 'CL_COORDINACION_TELEF')"/>
+        
+        <intercept-url pattern="/impexpdb/**.htm" access="hasAnyRole('DI_ADMIN','DI_OPERADOR')"/>
+        <intercept-url pattern="/cargaimg/**.htm" access="hasAnyRole('DI_ADMIN','DI_OPERADOR_DIGIT')"/>
+ 
+        <intercept-url pattern="/cargosetiquetas/**.htm" access="hasAnyRole('DI_ADMIN','DI_CONSULTAS',  'CL_ADMIN','CL_CONSULTAS','DI_COURIER')"/>
+        
+        <intercept-url pattern="/hojaruta/**.htm" access="hasAnyRole('DI_ADMIN','DI_CONSULTAS','DI_COURIER')"/>
+<!--         <intercept-url pattern="/**" access="denyAll"/>  -->
+        
+        <form-login 
+        	login-page="/inicio/login.htm"
+        	authentication-failure-url="/inicio/login.htm?error=true"
+        	login-processing-url="/inicio/login"
+        	default-target-url="/inicio/index.htm"
+        	always-use-default-target="true"
+        	username-parameter="username"
+        	password-parameter="password"
+        	/>
+        <remember-me key="uniqueAndSecret"/>
+        <logout 
+        	logout-url="/inicio/logout" 
+        	invalidate-session="true" 
+        	logout-success-url="/" 
+        	delete-cookies="JSESSIONID"/>
+        
+<!--         <security:access-denied-handler error-page="/inicio/error403.htm"/> -->
+
+		<session-management>
+	        <concurrency-control max-sessions="2"/>
+	    </session-management>
+	    
+    </http>
+<!-- 	<authentication-manager> -->
+<!--         <authentication-provider> -->
+<!--             <user-service> -->
+<!--                 <user name="edwin" password="edwin" authorities="Admin, User"/> -->
+<!--                 <user name="ronald" password="ronald" authorities="User"/> -->
+<!--             </user-service> -->
+<!--         </authentication-provider> -->
+<!--     </authentication-manager> -->
+
+	
+	<beans:bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+	    <beans:property name="userDetailsService" ref="userDetailsService" ></beans:property>
+	    
+	</beans:bean>
+	
+	<beans:bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+	    <beans:property name="providers">
+	        <beans:list>
+	            <beans:ref local="daoAuthenticationProvider"/>
+	        </beans:list>
+	    </beans:property>
+	</beans:bean>
+	
+	<authentication-manager>
+	    <authentication-provider user-service-ref="userDetailsService">
+	        <password-encoder hash="md5"></password-encoder>
+	    </authentication-provider>
+	</authentication-manager>
+	
+</beans:beans>
